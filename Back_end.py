@@ -2,10 +2,11 @@ import imaplib
 import email
 from email.header import decode_header
 import psycopg2
+from email.utils import parsedate_to_datetime
 
 # --- Configuration ---
-GMAIL_USER = "shashwatj0107@gmail.com"
-GMAIL_PASS = "yhxt wwmx vjbf luyf"
+GMAIL_USER = "shashwat.jaiswal2025@vitstudent.ac.in"
+GMAIL_PASS = "rmnd jgml zija wsvm"
 IMAP_SERVER = "imap.gmail.com"
 PG_HOST = "localhost"
 PG_DB = "notifly_db"
@@ -62,8 +63,15 @@ def fetch_gmail():
                 else:
                     charset = msg.get_content_charset() or "utf-8"
                     body = msg.get_payload(decode=True).decode(charset, errors="ignore")
-                received_date = msg.get('Date')
+                received_date_str = msg.get('Date')
+                try:
+                    received_date = parsedate_to_datetime(received_date_str) if received_date_str else None
+                except Exception:
+                    received_date = None
                 emails.append((subject, sender, body, received_date))
+        print(i)
+        if i>=10:
+            break
 
     mail.logout()
     print(f"Fetched {len(emails)} emails from Gmail.")
@@ -74,9 +82,14 @@ def store_emails(conn, emails):
     cur = conn.cursor()
     for subject, sender, body, received_date in emails:
         cur.execute(
-            "INSERT INTO emails (subject, sender, body, received_date) VALUES (%s, %s, %s, %s)",
-            (subject, sender, body, received_date)
+            "SELECT id FROM emails WHERE subject=%s AND sender=%s AND received_date=%s",
+            (subject, sender, received_date)
         )
+        if cur.fetchone() is None:
+            cur.execute(
+                "INSERT INTO emails (subject, sender, body, received_date) VALUES (%s, %s, %s, %s)",
+                (subject, sender, body, received_date)
+            )
     conn.commit()
     cur.close()
     print(f"Stored {len(emails)} emails in the database.")
