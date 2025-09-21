@@ -3,81 +3,85 @@ import email
 from email.header import decode_header
 import psycopg2
 
-# --- Configuration (replace with your credentials) ---
-GMAIL_USER = "shashwat.jaiswal2025@vitstudent.ac.in"
-GMAIL_PASSWORD = "cp8QSsxbAR"
+# --- Configuration ---
+GMAIL_USER = "shashwatj0107@gmail.com"
+GMAIL_PASS = "yhxt wwmx vjbf luyf"
 IMAP_SERVER = "imap.gmail.com"
-POSTGRES_HOST = "localhost"
-POSTGRES_DB = "notify_db"
-POSTGRES_USER = "postgres"
-POSTGRES_PASSWORD = "postgress"
+PG_HOST = "localhost"
+PG_DB = "notifly_db"
+PG_USER = "postgres"
+PG_PASS = "pass"
 
-def connect_postgres():
+# --- Database Setup ---
+def init_db():
     conn = psycopg2.connect(
-        host=POSTGRES_HOST,
-        dbname=POSTGRES_DB,
-        user=POSTGRES_USER,
-        password=POSTGRES_PASSWORD
+        host=PG_HOST, dbname=PG_DB, user=PG_USER, password=PG_PASS
     )
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS emails (
+            id SERIAL PRIMARY KEY,
+            subject TEXT,
+            sender TEXT,
+            body TEXT
+        )
+    """)
+    conn.commit()
+    cur.close()
+    print("Database initialized and table ensured.")
     return conn
 
-def create_table(conn):
-    with conn.cursor() as cur:
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS emails (
-                id SERIAL PRIMARY KEY,
-                subject TEXT,
-                sender TEXT,
-                body TEXT
-            );
-        """)
-        conn.commit()
-
-def parse_email(msg):
-    subject, encoding = decode_header(msg["Subject"])[0]
-    if isinstance(subject, bytes):
-        subject = subject.decode(encoding or "utf-8", errors="ignore")
-    sender = msg.get("From")
-    body = ""
-    if msg.is_multipart():
-        for part in msg.walk():
-            if part.get_content_type() == "text/plain" and not part.get('Content-Disposition'):
-                charset = part.get_content_charset() or "utf-8"
-                body += part.get_payload(decode=True).decode(charset, errors="ignore")
-    else:
-        charset = msg.get_content_charset() or "utf-8"
-        body = msg.get_payload(decode=True).decode(charset, errors="ignore")
-    return subject, sender, body
-
-def save_email(conn, subject, sender, body):
-    with conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO emails (subject, sender, body) VALUES (%s, %s, %s);",
-            (subject, sender, body)
-        )
-        conn.commit()
-
+# --- Email Fetching ---
 def fetch_gmail():
-    # Connect to Gmail IMAP
+    print("Fetching started")
     mail = imaplib.IMAP4_SSL(IMAP_SERVER)
-    mail.login(GMAIL_USER, GMAIL_PASSWORD)
+    mail.login(GMAIL_USER, GMAIL_PASS)
     mail.select("inbox")
     typ, data = mail.search(None, "ALL")
     email_ids = data[0].split()
-
-    conn = connect_postgres()
-    create_table(conn)
-
+    emails = []
+    i=0
     for eid in email_ids:
+        i+=1
         typ, msg_data = mail.fetch(eid, "(RFC822)")
         for response_part in msg_data:
             if isinstance(response_part, tuple):
                 msg = email.message_from_bytes(response_part[1])
-                subject, sender, body = parse_email(msg)
-                save_email(conn, subject, sender, body)
-
-    conn.close()
+                subject, encoding = decode_header(msg.get("Subject"))[0]
+                if isinstance(subject, bytes):
+                    subject = subject.decode(encoding or "utf-8", errors="ignore")
+                sender = msg.get("From")
+                body = ""
+                if msg.is_multipart():
+                    for part in msg.walk():
+                        if part.get_content_type() == "text/plain" and not part.get("Content-Disposition"):
+                            charset = part.get_content_charset() or "utf-8"
+                            body += part.get_payload(decode=True).decode(charset, errors="ignore")
+                else:
+                    charset = msg.get_content_charset() or "utf-8"
+                    body = msg.get_payload(decode=True).decode(charset, errors="ignore")
+                emails.append((subject, sender, body))
+        if i>=10:
+            break
+        
     mail.logout()
+    print(f"Fetched {len(emails)} emails from Gmail.")
+    return emails
+
+# --- Store Emails ---
+def store_emails(conn, emails):
+    cur = conn.cursor()
+    for subject, sender, body in emails:
+        cur.execute(
+            "INSERT INTO emails (subject, sender, body) VALUES (%s, %s, %s)",
+            (subject, sender, body)
+        )
+    conn.commit()
+    cur.close()
+    print(f"Stored {len(emails)} emails in the database.")
 
 if __name__ == "__main__":
-    fetch_gmail()
+    conn = init_db()
+    emails = fetch_gmail()
+    store_emails(conn, emails)
+    conn.close()
