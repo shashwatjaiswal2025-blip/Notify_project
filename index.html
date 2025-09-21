@@ -1,1185 +1,1400 @@
-<!DOCTYPE html><!DOCTYPE html>
-
-<html lang="en"><html lang="en">
-
-<head><head>
-
-    <meta charset="UTF-8">  <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Notifly - Campus Newsletter</title>  <title>Notifly - Campus Newsletter</title>
-
-    <style>  <style>
-
-        * {    * {
-
-            margin: 0;      margin: 0;
-
-            padding: 0;      padding: 0;
-
-            box-sizing: border-box;      box-sizing: border-box;
-
-        }    }
-
-
-
-        body {    body {
-
-            font-family: 'Arial', sans-serif;      font-family: 'Arial', sans-serif;
-
-            line-height: 1.6;      line-height: 1.6;
-
-            color: #333;      color: #333;
-
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-            min-height: 100vh;      min-height: 100vh;
-
-        }    }
-
-
-
-        /* Navigation Bar */    /* Navigation Bar */
-
-        .navbar {    .navbar {
-
-            background: rgba(255, 255, 255, 0.95);      background: rgba(255, 255, 255, 0.95);
-
-            backdrop-filter: blur(10px);      backdrop-filter: blur(10px);
-
-            padding: 1rem 0;      padding: 1rem 0;
-
-            position: fixed;      position: fixed;
-
-            top: 0;      top: 0;
-
-            left: 0;      left: 0;
-
-            right: 0;      right: 0;
-
-            z-index: 1000;      z-index: 1000;
-
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-
-        }    }
-
-
-
-        .nav-container {    .nav-container {
-
-            max-width: 1200px;      max-width: 1200px;
-
-            margin: 0 auto;      margin: 0 auto;
-
-            padding: 0 2rem;      padding: 0 2rem;
-
-            display: flex;      display: flex;
-
-            justify-content: space-between;      justify-content: space-between;
-
-            align-items: center;      align-items: center;
-
-        }    }
-
-
-
-        .logo {    .logo {
-
-            font-size: 1.8rem;      font-size: 1.8rem;
-
-            font-weight: bold;      font-weight: bold;
-
-            color: #667eea;      color: #667eea;
-
-            text-decoration: none;      text-decoration: none;
-
-        }    }
-
-
-
-        .nav-menu {    .nav-menu {
-
-            display: flex;      display: flex;
-
-            list-style: none;      list-style: none;
-
-            gap: 2rem;      gap: 2rem;
-
-        }    }
-
-
-
-        .nav-link {    .nav-link {
-
-            text-decoration: none;      text-decoration: none;
-
-            color: #333;      color: #333;
-
-            font-weight: 500;      font-weight: 500;
-
-            transition: color 0.3s ease;      transition: color 0.3s ease;
-
-            position: relative;      position: relative;
-
-        }    }
-
-
-
-        .nav-link:hover {    .nav-link:hover {
-
-            color: #667eea;      color: #667eea;
-
-        }    }
-
-
-
-        .nav-link.active {    .nav-link::after {
-
-            color: #667eea;      content: '';
-
-        }      position: absolute;
-
-      bottom: -5px;
-
-        .nav-link::after {      left: 0;
-
-            content: '';      width: 0;
-
-            position: absolute;      height: 2px;
-
-            bottom: -5px;      background: #667eea;
-
-            left: 0;      transition: width 0.3s ease;
-
-            width: 0;    }
-
-            height: 2px;
-
-            background: #667eea;    .nav-link:hover::after {
-
-            transition: width 0.3s ease;      width: 100%;
-
-        }    }
-
-
-
-        .nav-link:hover::after,    /* Mobile Menu Toggle */
-
-        .nav-link.active::after {    .menu-toggle {
-
-            width: 100%;      display: none;
-
-        }      flex-direction: column;
-
-      cursor: pointer;
-
-        /* Main Content */    }
-
-        .main-content {
-
-            margin-top: 80px;    .menu-toggle span {
-
-            padding: 2rem 0;      width: 25px;
-
-            min-height: calc(100vh - 80px);      height: 3px;
-
-        }      background: #333;
-
-      margin: 3px 0;
-
-        .container {      transition: 0.3s;
-
-            max-width: 1200px;    }
-
-            margin: 0 auto;
-
-            padding: 0 2rem;    /* Main Content */
-
-        }    .main-content {
-
-      margin-top: 80px;
-
-        /* Hero Section */      padding: 2rem 0;
-
-        .hero {    }
-
-            text-align: center;
-
-            background: rgba(255, 255, 255, 0.1);    .container {
-
-            backdrop-filter: blur(10px);      max-width: 100%;
-
-            border-radius: 20px;      margin: 0 auto;
-
-            padding: 3rem 2rem;      padding: 0 2rem;
-
-            margin-bottom: 3rem;    }
-
-            color: white;
-
-        }    /* Layout Grid */
-
-    .page-layout {
-
-        .hero h1 {      display: grid;
-
-            font-size: 3rem;      grid-template-columns: 350px 1fr;
-
-            margin-bottom: 1rem;      gap: 2rem;
-
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);      margin-bottom: 2rem;
-
-        }    }
-
-
-
-        .hero p {    .sidebar {
-
-            font-size: 1.2rem;      display: flex;
-
-            opacity: 0.9;      flex-direction: column;
-
-            margin-bottom: 2rem;      gap: 1.5rem;
-
-        }    }
-
-
-
-        .cta-button {    /* Calendar Widget */
-
-            background: linear-gradient(135deg, #667eea, #764ba2);    .calendar-widget {
-
-            color: white;      background: rgba(255, 255, 255, 0.95);
-
-            text-decoration: none;      backdrop-filter: blur(10px);
-
-            padding: 1rem 2rem;      border-radius: 15px;
-
-            border-radius: 10px;      padding: 1.5rem;
-
-            font-weight: 600;      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-
-            display: inline-block;      overflow: hidden;
-
-            transition: transform 0.3s ease;    }
-
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-
-        }    .calendar-header {
-
-      text-align: center;
-
-        .cta-button:hover {      margin-bottom: 1.5rem;
-
-            transform: translateY(-3px);    }
-
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-
-        }    .calendar-title {
-
-      color: #667eea;
-
-        /* Content Grid */      font-size: 1.4rem;
-
-        .content-grid {      font-weight: bold;
-
-            display: grid;      margin-bottom: 0.5rem;
-
-            grid-template-columns: 1fr 300px;    }
-
-            gap: 2rem;
-
-            margin-top: 3rem;    .calendar-month {
-
-        }      color: #333;
-
-      font-size: 1rem;
-
-        .news-section {      font-weight: 500;
-
-            background: rgba(255, 255, 255, 0.95);    }
-
-            backdrop-filter: blur(10px);
-
-            border-radius: 20px;    .calendar-grid {
-
-            padding: 2rem;      display: grid;
-
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);      grid-template-columns: repeat(7, 1fr);
-
-        }      gap: 2px;
-
-      margin-top: 1.5rem;
-
-        .sidebar {      padding: 0.3rem;
-
-            display: flex;      background: rgba(255, 255, 255, 0.5);
-
-            flex-direction: column;      border-radius: 10px;
-
-            gap: 2rem;    }
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifly - Campus Newsletter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-    .calendar-day-header {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #5a6fd8 0%, #6b4397 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-        .calendar-widget,      text-align: center;
+        /* Global Animated Background */
+        .global-animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
 
-        .quick-updates {      font-size: 0.8rem;
+        .global-bg-orb {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: globalFloat 25s infinite linear;
+        }
 
-            background: rgba(255, 255, 255, 0.95);      font-weight: bold;
+        .global-bg-orb:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
 
-            backdrop-filter: blur(10px);      color: #666;
+        .global-bg-orb:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -8s;
+        }
 
-            border-radius: 20px;      padding: 0.4rem 0.2rem;
+        .global-bg-orb:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -15s;
+        }
 
-            padding: 1.5rem;      background: #f8f9fa;
+        @keyframes globalFloat {
+            0% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0px, 0px) rotate(360deg); }
+        }
 
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);      border-radius: 4px;
+        /* Global Floating Particles */
+        .global-floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-        }      margin-bottom: 0.2rem;
+        .global-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: globalFloatUp 20s infinite linear;
+        }
 
-    }
+        @keyframes globalFloatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0vh) scale(0);
+            }
+        }
+
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #5a6fd8 0%, #6b4397 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            min-width: 400px;
+        }
+
+        .login-container h2 {
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .test-login-btn {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main-content-wrapper {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .main-content-wrapper.show {
+            display: block;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: #333; /* Fallback color for browsers that don't support background-clip */
+            text-decoration: none;
+            transition: all 0.4s ease;
+            position: relative;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            animation: logoGradientShift 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: '📢';
+            margin-right: 8px;
+            font-size: 1.8rem;
+            animation: logoIconBounce 2s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            /* Ensure emoji is visible */
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px) scale(1.05);
+            text-shadow: 
+                0 4px 15px rgba(102, 126, 234, 0.4),
+                0 0 20px rgba(118, 75, 162, 0.3);
+            animation-play-state: paused;
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+        }
+
+        .logo:hover::before {
+            transform: rotate(10deg) scale(1.1);
+            animation-play-state: paused;
+        }
+
+        @keyframes logoGradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes logoIconBounce {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-3px) rotate(5deg);
+            }
+        }
+
+        /* Ensure logo is visible on all browsers */
+        @supports not (-webkit-background-clip: text) {
+            .logo {
+                background: none;
+                color: #333;
+                font-weight: 800;
+            }
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            color: #333;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        /* Container */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        /* Page Layout */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Newsletter Content */
+        .newsletter-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            color: #333;
+        }
 
         .section-title {
-
-            font-size: 1.5rem;    .calendar-day {
-
-            color: #667eea;      text-align: center;
-
-            margin-bottom: 1rem;      padding: 0.4rem 0.2rem;
-
-            padding-bottom: 0.5rem;      font-size: 0.9rem;
-
-            border-bottom: 2px solid #667eea;      border-radius: 4px;
-
-        }      cursor: pointer;
-
-      transition: all 0.2s ease;
-
-        /* Calendar Styles */      min-height: 30px;
-
-        .calendar {      display: flex;
-
-            text-align: center;      align-items: center;
-
-        }      justify-content: center;
-
-      font-weight: 500;
-
-        .calendar-header {      background: rgba(255, 255, 255, 0.8);
-
-            display: flex;      margin: 1px;
-
-            justify-content: space-between;    }
-
-            align-items: center;
-
-            margin-bottom: 1rem;    .calendar-day:hover {
-
-        }      background: #e3f2fd !important;
-
-      transform: scale(1.02);
-
-        .calendar-grid {      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
-
-            display: grid;    }
-
-            grid-template-columns: repeat(7, 1fr);
-
-            gap: 5px;    .calendar-day.current {
-
-            font-size: 0.9rem;      background: #667eea !important;
-
-        }      color: white;
-
-      font-weight: bold;
-
-        .calendar-day {      box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
-
-            padding: 8px;    }
-
-            text-align: center;
-
-            border-radius: 5px;    .calendar-day.other-month {
-
-            transition: background 0.3s ease;      color: #ccc;
-
-        }      background: rgba(255, 255, 255, 0.4) !important;
-
-    }
-
-        .calendar-day.header {
-
-            font-weight: bold;    /* Quick Updates Sidebar */
-
-            color: #667eea;    .quick-updates-sidebar {
-
-        }      background: linear-gradient(135deg, #667eea, #764ba2);
-
-      color: white;
-
-        .calendar-day.today {      border-radius: 15px;
-
-            background: #667eea;      padding: 2rem;
-
-            color: white;    }
-
-        }
-
-    .quick-updates-sidebar .section-title {
-
-        .calendar-day:not(.header):not(.today):hover {      color: white;
-
-            background: #f0f2ff;      border-bottom-color: white;
-
-        }      font-size: 1.4rem;
-
-      margin-bottom: 1.5rem;
-
-        /* News Article Styles */    }
-
-        .news-article {
-
-            border-bottom: 1px solid #eee;    .update-item-sidebar {
-
-            padding: 1.5rem 0;      background: rgba(255, 255, 255, 0.15);
-
-            margin-bottom: 1.5rem;      border-radius: 10px;
-
-        }      padding: 1rem;
-
-      margin-bottom: 1rem;
-
-        .news-article:last-child {      backdrop-filter: blur(5px);
-
-            border-bottom: none;      font-size: 0.95rem;
-
-            margin-bottom: 0;      line-height: 1.4;
-
-        }    }
-
-
-
-        .news-category {    .update-item-sidebar:last-child {
-
-            background: #667eea;      margin-bottom: 0;
-
-            color: white;    }
-
-            padding: 0.3rem 0.8rem;
-
-            border-radius: 15px;    /* Header Section */
-
-            font-size: 0.8rem;    .header-section {
-
-            font-weight: 600;      text-align: center;
-
-            text-transform: uppercase;      background: rgba(255, 255, 255, 0.1);
-
-            display: inline-block;      backdrop-filter: blur(10px);
-
-            margin-bottom: 0.5rem;      border-radius: 20px;
-
-        }      padding: 3rem 2rem;
-
-      margin-bottom: 3rem;
-
-        .news-title {      color: white;
-
-            font-size: 1.3rem;    }
-
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
             font-weight: 600;
-
-            margin-bottom: 0.5rem;    .header-section h1 {
-
-            color: #333;      font-size: 3rem;
-
-        }      margin-bottom: 1rem;
-
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-
-        .news-meta {    }
-
-            color: #666;
-
-            font-size: 0.9rem;    .header-section p {
-
-            margin-bottom: 1rem;      font-size: 1.2rem;
-
-        }      opacity: 0.9;
-
-    }
-
-        .news-excerpt {
-
-            color: #555;    /* Newsletter Content */
-
-            line-height: 1.6;    .newsletter-content {
-
-        }      background: white;
-
-      border-radius: 20px;
-
-        /* Quick Updates */      padding: 3rem;
-
-        .update-item {      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-
-            padding: 1rem 0;      margin-bottom: 2rem;
-
-            border-bottom: 1px solid #eee;    }
-
         }
 
-    .section-title {
+        /* Articles */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
 
-        .update-item:last-child {      font-size: 2rem;
-
-            border-bottom: none;      color: #667eea;
-
-        }      margin-bottom: 2rem;
-
-      border-bottom: 3px solid #667eea;
-
-        .update-title {      padding-bottom: 0.5rem;
-
-            font-weight: 600;    }
-
+        .article-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 5px solid rgba(102, 126, 234, 0.8);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
             color: #333;
-
-            margin-bottom: 0.3rem;    .article-grid {
-
-        }      display: grid;
-
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-
-        .update-time {      gap: 2rem;
-
-            color: #666;      margin-bottom: 3rem;
-
-            font-size: 0.8rem;    }
-
         }
 
-    .article-card {
-
-        /* Responsive Design */      background: #f8f9fa;
-
-        @media (max-width: 768px) {      border-radius: 15px;
-
-            .content-grid {      padding: 2rem;
-
-                grid-template-columns: 1fr;      border-left: 5px solid #667eea;
-
-            }      transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    }
-
-            .sidebar {
-
-                order: -1;    .article-card:hover {
-
-            }      transform: translateY(-5px);
-
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-
-            .hero h1 {    }
-
-                font-size: 2rem;
-
-            }    .article-title {
-
-      font-size: 1.3rem;
-
-            .container {      color: #333;
-
-                padding: 0 1rem;      margin-bottom: 1rem;
-
-            }    }
-
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
-    </style>    .article-meta {
-
-</head>      color: #666;
-
-<body>      font-size: 0.9rem;
-
-    <!-- Navigation Bar -->      margin-bottom: 1rem;
-
-    <nav class="navbar">    }
-
-        <div class="nav-container">
-
-            <a href="index.html" class="logo">Notifly</a>    .article-excerpt {
-
-            <ul class="nav-menu">      color: #555;
-
-                <li><a href="index.html" class="nav-link active">Home</a></li>      line-height: 1.6;
-
-                <li><a href="#latest" class="nav-link">Latest News</a></li>    }
-
-                <li><a href="#events" class="nav-link">Events</a></li>
-
-                <li><a href="#academics" class="nav-link">Academics</a></li>    .read-more {
-
-                <li><a href="templates/submit.html" class="nav-link">Submit</a></li>      color: #667eea;
-
-            </ul>      text-decoration: none;
-
-        </div>      font-weight: 500;
-
-    </nav>      margin-top: 1rem;
-
-      display: inline-block;
-
-    <!-- Main Content -->    }
-
-    <div class="main-content">
-
-        <div class="container">    .read-more:hover {
-
-            <!-- Hero Section -->      text-decoration: underline;
-
-            <div class="hero">    }
-
-                <h1>Welcome to Notifly</h1>
-
-                <p>Your campus newsletter hub for news, events, and announcements</p>    /* Quick Updates Section */
-
-                <a href="templates/submit.html" class="cta-button">Submit News</a>    .quick-updates {
-
-            </div>      background: linear-gradient(135deg, #667eea, #764ba2);
-
-      color: white;
-
-            <!-- Content Grid -->      border-radius: 15px;
-
-            <div class="content-grid">      padding: 2rem;
-
-                <!-- News Section -->      margin-bottom: 3rem;
-
-                <div class="news-section" id="latest">    }
-
-                    <h2 class="section-title">Latest News</h2>
-
-                        .update-item {
-
-                    <article class="news-article">      background: rgba(255, 255, 255, 0.1);
-
-                        <span class="news-category">Event</span>      border-radius: 10px;
-
-                        <h3 class="news-title">Annual Tech Fair 2025</h3>      padding: 1rem;
-
-                        <div class="news-meta">Posted on September 20, 2025 | Engineering Department</div>      margin-bottom: 1rem;
-
-                        <p class="news-excerpt">Join us for the biggest tech showcase of the year! Students and faculty will present innovative projects, startups will demo their latest products, and industry leaders will share insights on emerging technologies.</p>      backdrop-filter: blur(5px);
-
-                    </article>    }
-
-
-
-                    <article class="news-article">    .update-item:last-child {
-
-                        <span class="news-category">Academic</span>      margin-bottom: 0;
-
-                        <h3 class="news-title">New Course Offerings for Spring 2026</h3>    }
-
-                        <div class="news-meta">Posted on September 19, 2025 | Academic Affairs</div>
-
-                        <p class="news-excerpt">Exciting new courses are being offered next semester including Advanced AI Ethics, Sustainable Engineering Design, and Digital Marketing Analytics. Registration opens October 1st.</p>    /* Footer */
-
-                    </article>    .footer {
-
-      background: rgba(255, 255, 255, 0.1);
-
-                    <article class="news-article">      backdrop-filter: blur(10px);
-
-                        <span class="news-category">Club</span>      color: white;
-
-                        <h3 class="news-title">Robotics Club Wins Regional Championship</h3>      text-align: center;
-
-                        <div class="news-meta">Posted on September 18, 2025 | Robotics Club</div>      padding: 2rem;
-
-                        <p class="news-excerpt">Our robotics team secured first place at the Regional STEM Competition with their autonomous delivery robot prototype. The team will advance to nationals in December.</p>      border-radius: 20px;
-
-                    </article>      margin-top: 2rem;
-
-    }
-
-                    <article class="news-article">
-
-                        <span class="news-category">Campus</span>    /* Responsive Design */
-
-                        <h3 class="news-title">New Library Study Pods Now Available</h3>    @media (max-width: 1200px) {
-
-                        <div class="news-meta">Posted on September 17, 2025 | Library Services</div>      .page-layout {
-
-                        <p class="news-excerpt">The library has installed 12 new soundproof study pods on the third floor. These pods feature wireless charging, adjustable lighting, and can be reserved online for up to 4 hours.</p>        grid-template-columns: 320px 1fr;
-
-                    </article>      }
-
-                </div>      
-
-      .calendar-widget {
-
-                <!-- Sidebar -->        padding: 1.2rem;
-
-                <div class="sidebar">      }
-
-                    <!-- Calendar Widget -->    }
-
-                    <div class="calendar-widget">
-
-                        <h3 class="section-title">Calendar</h3>    @media (max-width: 968px) {
-
-                        <div class="calendar">      .page-layout {
-
-                            <div class="calendar-header">        grid-template-columns: 1fr;
-
-                                <button id="prevMonth">&lt;</button>        gap: 1.5rem;
-
-                                <span id="currentMonth">September 2025</span>      }
-
-                                <button id="nextMonth">&gt;</button>
-
-                            </div>      .sidebar {
-
-                            <div class="calendar-grid" id="calendarGrid">        order: 2;
-
-                                <!-- Calendar will be generated by JavaScript -->      }
-
-                            </div>
-
-                        </div>      .main-content-area {
-
-                    </div>        order: 1;
-
-      }
-
-                    <!-- Quick Updates -->    }
-
-                    <div class="quick-updates">
-
-                        <h3 class="section-title">Quick Updates</h3>    @media (max-width: 768px) {
-
-                              .menu-toggle {
-
-                        <div class="update-item">        display: flex;
-
-                            <div class="update-title">Career Fair Registration Open</div>      }
-
-                            <div class="update-time">2 hours ago</div>
-
-                        </div>      .nav-menu {
-
-                                position: fixed;
-
-                        <div class="update-item">        left: -100%;
-
-                            <div class="update-title">Dining Hall Menu Updated</div>        top: 80px;
-
-                            <div class="update-time">4 hours ago</div>        flex-direction: column;
-
-                        </div>        background: white;
-
-                                width: 100%;
-
-                        <div class="update-item">        text-align: center;
-
-                            <div class="update-title">Parking Lot B Maintenance</div>        transition: 0.3s;
-
-                            <div class="update-time">1 day ago</div>        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-
-                        </div>        padding: 2rem 0;
-
-                              }
-
-                        <div class="update-item">
-
-                            <div class="update-title">Student ID Photo Sessions</div>      .nav-menu.active {
-
-                            <div class="update-time">2 days ago</div>        left: 0;
-
-                        </div>      }
-
-                    </div>
-
-                </div>      .container {
-
-            </div>        padding: 0 1rem;
-
-        </div>      }
-
-    </div>
-
-      .calendar-widget {
-
-    <script>        padding: 1.5rem;
-
-        // Calendar functionality      }
-
-        const calendarGrid = document.getElementById('calendarGrid');
-
-        const currentMonthSpan = document.getElementById('currentMonth');      .calendar-title {
-
-        const prevMonthBtn = document.getElementById('prevMonth');        font-size: 1.2rem;
-
-        const nextMonthBtn = document.getElementById('nextMonth');      }
-
-
-
-        let currentDate = new Date();      .calendar-day {
-
-                padding: 0.6rem;
-
-        function generateCalendar(year, month) {        font-size: 0.9rem;
-
-            const firstDay = new Date(year, month, 1);        min-height: 35px;
-
-            const lastDay = new Date(year, month + 1, 0);      }
-
-            const today = new Date();
-
-                  .calendar-day-header {
-
-            const monthNames = [        padding: 0.5rem;
-
-                'January', 'February', 'March', 'April', 'May', 'June',        font-size: 0.8rem;
-
-                'July', 'August', 'September', 'October', 'November', 'December'      }
-
-            ];
-
-                  .quick-updates-sidebar {
-
-            currentMonthSpan.textContent = `${monthNames[month]} ${year}`;        padding: 1.5rem;
-
-                  }
-
-            // Clear previous calendar
-
-            calendarGrid.innerHTML = '';      .header-section h1 {
-
-                    font-size: 2rem;
-
-            // Add day headers      }
-
-            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-            dayHeaders.forEach(day => {      .newsletter-content {
-
-                const dayElement = document.createElement('div');        padding: 2rem;
-
-                dayElement.className = 'calendar-day header';      }
-
-                dayElement.textContent = day;
-
-                calendarGrid.appendChild(dayElement);      .article-grid {
-
-            });        grid-template-columns: 1fr;
-
-                  }
-
-            // Add empty cells for days before the first day of the month    }
-
-            const startDay = firstDay.getDay();
-
-            for (let i = 0; i < startDay; i++) {    @media (max-width: 480px) {
-
-                const emptyDay = document.createElement('div');      .calendar-widget {
-
-                emptyDay.className = 'calendar-day';        padding: 1rem;
-
-                calendarGrid.appendChild(emptyDay);      }
-
+        .article-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .article-excerpt {
+            color: #444;
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            color: #5a67d8;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+
+        .calendar-title {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-month {
+            color: #555;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+            text-align: center;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .calendar-day {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .calendar-day.current {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+        }
+
+        /* Quick Updates */
+        .quick-updates-sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .quick-updates-sidebar .section-title {
+            color: #2c3e50;
+            border-bottom-color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .update-item-sidebar {
+            background: rgba(248, 249, 250, 0.9);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+            color: #333;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .update-item-sidebar:hover {
+            background: rgba(240, 242, 245, 0.95);
+            border-left: 3px solid #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-
-                  .calendar-day {
-
-            // Add days of the month        padding: 0.4rem;
-
-            for (let day = 1; day <= lastDay.getDate(); day++) {        font-size: 0.8rem;
-
-                const dayElement = document.createElement('div');        min-height: 30px;
-
-                dayElement.className = 'calendar-day';      }
-
-                dayElement.textContent = day;
-
-                      .calendar-day-header {
-
-                // Highlight today        padding: 0.4rem;
-
-                if (year === today.getFullYear() &&         font-size: 0.7rem;
-
-                    month === today.getMonth() &&       }
-
-                    day === today.getDate()) {
-
-                    dayElement.classList.add('today');      .quick-updates-sidebar {
-
-                }        padding: 1rem;
-
-                      }
-
-                calendarGrid.appendChild(dayElement);    }
-
-            }  </style>
-
-        }</head>
-
-        <body>
-
-        prevMonthBtn.addEventListener('click', () => {  <!-- Navigation Bar -->
-
-            currentDate.setMonth(currentDate.getMonth() - 1);  <nav class="navbar">
-
-            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());    <div class="nav-container">
-
-        });      <a href="#" class="logo">Notifly</a>
-
-              <ul class="nav-menu" id="navMenu">
-
-        nextMonthBtn.addEventListener('click', () => {        <li><a href="#home" class="nav-link">Home</a></li>
-
-            currentDate.setMonth(currentDate.getMonth() + 1);        <li><a href="#latest" class="nav-link">Latest News</a></li>
-
-            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());        <li><a href="#events" class="nav-link">Events</a></li>
-
-        });        <li><a href="#academics" class="nav-link">Academics</a></li>
-
-                <li><a href="submit.html" class="nav-link">Submit</a></li>
-
-        // Initialize calendar      </ul>
-
-        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());      <div class="menu-toggle" id="menuToggle">
-
-        <span></span>
-
-        // Smooth scrolling for anchor links        <span></span>
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {        <span></span>
-
-            anchor.addEventListener('click', function (e) {      </div>
-
-                e.preventDefault();    </div>
-
-                const target = document.querySelector(this.getAttribute('href'));  </nav>
-
-                if (target) {
-
-                    target.scrollIntoView({  <!-- Main Content -->
-
-                        behavior: 'smooth'  <div class="main-content">
-
-                    });    <div class="container">
-
-                }      <!-- Header Section -->
-
-            });      <section class="header-section" id="home">
-
-        });        <h1>Campus Newsletter</h1>
-
-    </script>        <p>Stay updated with the latest campus news, events, and announcements</p>
-
-</body>      </section>
-
-</html>
-      <!-- Page Layout with Sidebar -->
-      <div class="page-layout">
-        <!-- Left Sidebar -->
-        <div class="sidebar">
-          <!-- Calendar Widget -->
-          <div class="calendar-widget">
-            <div class="calendar-header">
-              <div class="calendar-title">September 2025</div>
-              <div class="calendar-month">Today: September 21</div>
-            </div>
-            <div class="calendar-grid">
-              <div class="calendar-day-header">Sun</div>
-              <div class="calendar-day-header">Mon</div>
-              <div class="calendar-day-header">Tue</div>
-              <div class="calendar-day-header">Wed</div>
-              <div class="calendar-day-header">Thu</div>
-              <div class="calendar-day-header">Fri</div>
-              <div class="calendar-day-header">Sat</div>
-              
-              <div class="calendar-day">1</div>
-              <div class="calendar-day">2</div>
-              <div class="calendar-day">3</div>
-              <div class="calendar-day">4</div>
-              <div class="calendar-day">5</div>
-              <div class="calendar-day">6</div>
-              <div class="calendar-day">7</div>
-              <div class="calendar-day">8</div>
-              <div class="calendar-day">9</div>
-              <div class="calendar-day">10</div>
-              <div class="calendar-day">11</div>
-              <div class="calendar-day">12</div>
-              <div class="calendar-day">13</div>
-              <div class="calendar-day">14</div>
-              <div class="calendar-day">15</div>
-              <div class="calendar-day">16</div>
-              <div class="calendar-day">17</div>
-              <div class="calendar-day">18</div>
-              <div class="calendar-day">19</div>
-              <div class="calendar-day">20</div>
-              <div class="calendar-day current">21</div>
-              <div class="calendar-day">22</div>
-              <div class="calendar-day">23</div>
-              <div class="calendar-day">24</div>
-              <div class="calendar-day">25</div>
-              <div class="calendar-day">26</div>
-              <div class="calendar-day">27</div>
-              <div class="calendar-day">28</div>
-              <div class="calendar-day">29</div>
-              <div class="calendar-day">30</div>
-              <div class="calendar-day other-month">1</div>
-              <div class="calendar-day other-month">2</div>
-              <div class="calendar-day other-month">3</div>
-              <div class="calendar-day other-month">4</div>
-              <div class="calendar-day other-month">5</div>
-            </div>
-          </div>
-
-          <!-- Quick Updates Sidebar -->
-          <div class="quick-updates-sidebar">
-            <h3 class="section-title">Quick Updates</h3>
-            <div class="update-item-sidebar">
-              <strong>📚 Library Hours:</strong> Extended 24/7 during exam periods
-            </div>
-            <div class="update-item-sidebar">
-              <strong>🚌 New Shuttle:</strong> Campus to research park route starts Monday
-            </div>
-            <div class="update-item-sidebar">
-              <strong>🎨 Art Gallery:</strong> "Perspectives" opens Friday at 6 PM in Student Center
-            </div>
-            <div class="update-item-sidebar">
-              <strong>💡 Innovation Challenge:</strong> Applications due September 30th
-            </div>
-            <div class="update-item-sidebar">
-              <strong>🏆 Dean's List:</strong> Fall semester applications now open
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="main-content-area">
-          <!-- Newsletter Content -->
-          <div class="newsletter-content">
-            <!-- Latest News Section -->
-            <section id="latest">
-              <h2 class="section-title">Latest News</h2>
-              <div class="article-grid">
-                <article class="article-card">
-                  <h3 class="article-title">New Library Extension Opens</h3>
-                  <div class="article-meta">Published on September 20, 2025 | Campus News</div>
-                  <p class="article-excerpt">
-                    The highly anticipated library extension featuring modern study spaces, collaboration rooms, and a digital media center is now open to all students. The new facility includes 24/7 access areas and state-of-the-art technology.
-                  </p>
-                  <a href="#" class="read-more">Read more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Fall Career Fair Registration</h3>
-                  <div class="article-meta">Published on September 19, 2025 | Career Services</div>
-                  <p class="article-excerpt">
-                    Registration is now open for the Fall Career Fair scheduled for October 15th. Over 100 companies will participate, offering internships and full-time positions across various industries.
-                  </p>
-                  <a href="#" class="read-more">Read more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Research Symposium Call for Papers</h3>
-                  <div class="article-meta">Published on September 18, 2025 | Research Office</div>
-                  <p class="article-excerpt">
-                    Graduate and undergraduate students are invited to submit abstracts for the Annual Research Symposium. Deadline for submissions is October 1st. Winners will receive research grants.
-                  </p>
-                  <a href="#" class="read-more">Read more →</a>
-                </article>
-              </div>
-            </section>
-
-            <!-- Events Section -->
-            <section id="events">
-              <h2 class="section-title">Upcoming Events</h2>
-              <div class="article-grid">
-                <article class="article-card">
-                  <h3 class="article-title">Tech Talk: AI in Healthcare</h3>
-                  <div class="article-meta">September 25, 2025 | 2:00 PM | Engineering Hall</div>
-                  <p class="article-excerpt">
-                    Join Dr. Sarah Chen as she discusses the latest developments in artificial intelligence applications in healthcare and medical research.
-                  </p>
-                  <a href="#" class="read-more">Learn more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Cultural Festival 2025</h3>
-                  <div class="article-meta">October 2-4, 2025 | Campus Quad</div>
-                  <p class="article-excerpt">
-                    Celebrate diversity with food, music, and performances from cultures around the world. Free admission for all students and community members.
-                  </p>
-                  <a href="#" class="read-more">Learn more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Homecoming Week</h3>
-                  <div class="article-meta">October 14-20, 2025 | Various Locations</div>
-                  <p class="article-excerpt">
-                    Alumni and students unite for a week of celebrations, including the parade, football game, and alumni networking events.
-                  </p>
-                  <a href="#" class="read-more">Learn more →</a>
-                </article>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <footer class="footer">
-        <p>&copy; 2025 Notifly Campus Newsletter. All rights reserved.</p>
-        <p>Have news to share? <a href="submit.html" style="color: #fff; text-decoration: underline;">Submit your story</a></p>
-      </footer>
-    </div>
-  </div>
-
-  <script>
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const navMenu = document.getElementById('navMenu');
-
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-    });
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        // Close mobile menu if open
-        navMenu.classList.remove('active');
-      });
-    });
 
-    // Change navbar background on scroll
-    window.addEventListener('scroll', () => {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-      } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-      }
-    });
-  </script>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Enhanced Fluid Background System - More Dynamic */
+        .fluid-background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            overflow: hidden;
+        }
+
+        /* Multi-layered Animated Gradient Overlay */
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300%;
+            height: 300%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.35) 0%, transparent 45%),
+                radial-gradient(circle at 40% 80%, rgba(240, 147, 251, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 60% 20%, rgba(96, 125, 139, 0.25) 0%, transparent 55%),
+                linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            animation: 
+                gradientShift 25s ease-in-out infinite,
+                gradientRotate 40s linear infinite,
+                gradientPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(-33%, -33%) scale(1); }
+            25% { transform: translate(-45%, -20%) scale(1.1); }
+            50% { transform: translate(-20%, -45%) scale(0.9); }
+            75% { transform: translate(-35%, -30%) scale(1.05); }
+        }
+
+        @keyframes gradientRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Enhanced Floating Orbs with Fluid Motion */
+        .floating-orbs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 30%, rgba(102, 126, 234, 0.1) 60%, transparent 80%);
+            filter: blur(2px);
+            animation: orbFluidMotion 30s infinite ease-in-out;
+        }
+
+        .orb:nth-child(1) {
+            width: 450px;
+            height: 450px;
+            top: 5%;
+            left: -5%;
+            animation-delay: 0s;
+            animation-duration: 35s;
+        }
+
+        .orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            top: 55%;
+            right: -10%;
+            animation-delay: -10s;
+            animation-duration: 28s;
+        }
+
+        .orb:nth-child(3) {
+            width: 600px;
+            height: 600px;
+            bottom: 10%;
+            left: 10%;
+            animation-delay: -20s;
+            animation-duration: 42s;
+        }
+
+        .orb:nth-child(4) {
+            width: 280px;
+            height: 280px;
+            top: 25%;
+            right: 20%;
+            animation-delay: -30s;
+            animation-duration: 32s;
+        }
+
+        .orb:nth-child(5) {
+            width: 400px;
+            height: 400px;
+            bottom: 35%;
+            right: -5%;
+            animation-delay: -15s;
+            animation-duration: 38s;
+        }
+
+        .orb:nth-child(6) {
+            width: 320px;
+            height: 320px;
+            top: 70%;
+            left: 60%;
+            animation-delay: -25s;
+            animation-duration: 30s;
+        }
+
+        @keyframes orbFluidMotion {
+            0%, 100% { 
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+                opacity: 0.6;
+            }
+            16% { 
+                transform: translate(80px, -60px) rotate(60deg) scale(1.2);
+                opacity: 0.8;
+            }
+            33% { 
+                transform: translate(-40px, 80px) rotate(120deg) scale(0.8);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(60px, -40px) rotate(180deg) scale(1.1);
+                opacity: 0.7;
+            }
+            66% { 
+                transform: translate(-80px, 60px) rotate(240deg) scale(0.9);
+                opacity: 0.9;
+            }
+            83% { 
+                transform: translate(40px, -80px) rotate(300deg) scale(1.15);
+                opacity: 0.65;
+            }
+        }
+
+        /* Flowing Wave System */
+        .wave-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .fluid-wave {
+            position: absolute;
+            width: 200%;
+            height: 150px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C300,120 600,0 900,60 C1050,100 1150,20 1200,60 L1200,120 L0,120 Z' fill='rgba(255,255,255,0.08)'/%3E%3C/svg%3E") repeat-x;
+            animation: waveFlow 20s linear infinite;
+        }
+
+        .fluid-wave:nth-child(1) {
+            top: 20%;
+            animation-duration: 25s;
+            opacity: 0.6;
+        }
+
+        .fluid-wave:nth-child(2) {
+            top: 60%;
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.4;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,80 C300,20 600,120 900,80 C1050,40 1150,120 1200,80 L1200,120 L0,120 Z' fill='rgba(118,75,162,0.06)'/%3E%3C/svg%3E") repeat-x;
+        }
+
+        .fluid-wave:nth-child(3) {
+            bottom: 15%;
+            animation-duration: 30s;
+            opacity: 0.5;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C300,80 600,0 900,40 C1050,70 1150,10 1200,40 L1200,120 L0,120 Z' fill='rgba(240,147,251,0.05)'/%3E%3C/svg%3E") repeat-x;
+        }
+
+        @keyframes waveFlow {
+            0% { transform: translateX(0) scaleY(1); }
+            50% { transform: translateX(-25%) scaleY(1.2); }
+            100% { transform: translateX(-50%) scaleY(1); }
+        }
+
+        /* Enhanced Particle System with Fluid Movement */
+        .particle-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: particleFluidFlow 25s infinite linear;
+        }
+
+        .particle.small {
+            width: 4px;
+            height: 4px;
+            animation-duration: 20s;
+        }
+
+        .particle.medium {
+            width: 6px;
+            height: 6px;
+            animation-duration: 28s;
+        }
+
+        .particle.large {
+            width: 8px;
+            height: 8px;
+            animation-duration: 35s;
+        }
+
+        @keyframes particleFluidFlow {
+            0% {
+                opacity: 0;
+                transform: translateY(110vh) translateX(0px) rotate(0deg) scale(0);
+            }
+            5% {
+                opacity: 1;
+                transform: translateY(100vh) translateX(20px) rotate(45deg) scale(1);
+            }
+            25% {
+                opacity: 0.8;
+                transform: translateY(75vh) translateX(-30px) rotate(135deg) scale(1.2);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(50vh) translateX(40px) rotate(225deg) scale(0.8);
+            }
+            75% {
+                opacity: 0.6;
+                transform: translateY(25vh) translateX(-20px) rotate(315deg) scale(1.1);
+            }
+            95% {
+                opacity: 1;
+                transform: translateY(5vh) translateX(10px) rotate(405deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) translateX(50px) rotate(450deg) scale(0);
+            }
+        }
+
+        /* Morphing Blob System */
+        .morphing-blobs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .blob {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1), rgba(240, 147, 251, 0.12));
+            border-radius: 50%;
+            filter: blur(3px);
+            animation: blobMorph 45s infinite ease-in-out;
+        }
+
+        .blob:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 15%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .blob:nth-child(2) {
+            width: 250px;
+            height: 250px;
+            top: 65%;
+            right: 25%;
+            animation-delay: -15s;
+        }
+
+        .blob:nth-child(3) {
+            width: 180px;
+            height: 180px;
+            bottom: 25%;
+            left: 70%;
+            animation-delay: -30s;
+        }
+
+        .blob:nth-child(4) {
+            width: 220px;
+            height: 220px;
+            top: 40%;
+            left: 5%;
+            animation-delay: -22s;
+        }
+
+        @keyframes blobMorph {
+            0%, 100% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+                border-radius: 50% 40% 60% 30%;
+                opacity: 0.7;
+            }
+            20% {
+                transform: translate(30px, -50px) rotate(72deg) scale(1.3);
+                border-radius: 30% 70% 40% 60%;
+                opacity: 0.5;
+            }
+            40% {
+                transform: translate(-40px, 40px) rotate(144deg) scale(0.7);
+                border-radius: 70% 30% 50% 50%;
+                opacity: 0.9;
+            }
+            60% {
+                transform: translate(50px, -30px) rotate(216deg) scale(1.1);
+                border-radius: 40% 60% 30% 70%;
+                opacity: 0.6;
+            }
+            80% {
+                transform: translate(-30px, 60px) rotate(288deg) scale(0.9);
+                border-radius: 60% 40% 70% 30%;
+                opacity: 0.8;
+            }
+        }
+
+        /* Floating Light Rays */
+        .light-rays {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .light-ray {
+            position: absolute;
+            width: 1px;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), rgba(102, 126, 234, 0.3), transparent);
+            animation: rayFloat 15s infinite linear;
+            transform-origin: bottom center;
+        }
+
+        .light-ray:nth-child(1) {
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .light-ray:nth-child(2) {
+            left: 35%;
+            animation-delay: -5s;
+        }
+
+        .light-ray:nth-child(3) {
+            left: 55%;
+            animation-delay: -10s;
+        }
+
+        .light-ray:nth-child(4) {
+            left: 75%;
+            animation-delay: -7s;
+        }
+
+        .light-ray:nth-child(5) {
+            left: 85%;
+            animation-delay: -12s;
+        }
+
+        @keyframes rayFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scaleY(0);
+                opacity: 0;
+            }
+            10% {
+                transform: translateY(90vh) rotate(5deg) scaleY(1);
+                opacity: 1;
+            }
+            90% {
+                transform: translateY(-200px) rotate(-5deg) scaleY(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-300px) rotate(0deg) scaleY(0);
+                opacity: 0;
+            }
+        }
+
+        /* Swirling Energy Field */
+        .energy-field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 25% 25%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 75% 75%, rgba(118, 75, 162, 0.08) 0%, transparent 60%);
+            animation: energySwirl 60s linear infinite;
+        }
+
+        @keyframes energySwirl {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(0.9); }
+            75% { transform: rotate(270deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .login-container {
+                min-width: 300px;
+                margin: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 2rem;
+            }
+            
+            .header-section {
+                padding: 2rem 1rem;
+            }
+            
+            .newsletter-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Animated Background -->
+    <div class="global-animated-background">
+        <div class="global-bg-orb"></div>
+        <div class="global-bg-orb"></div>
+        <div class="global-bg-orb"></div>
+    </div>
+
+    <!-- Global Floating Particles -->
+    <div class="global-floating-particles">
+        <div class="global-particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="global-particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="global-particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="global-particle" style="left: 40%; animation-delay: 6s;"></div>
+        <div class="global-particle" style="left: 50%; animation-delay: 8s;"></div>
+        <div class="global-particle" style="left: 60%; animation-delay: 10s;"></div>
+        <div class="global-particle" style="left: 70%; animation-delay: 12s;"></div>
+        <div class="global-particle" style="left: 80%; animation-delay: 14s;"></div>
+        <div class="global-particle" style="left: 90%; animation-delay: 16s;"></div>
+        <div class="global-particle" style="left: 95%; animation-delay: 18s;"></div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <h2>Welcome</h2>
+            <form id="loginForm">
+                <input type="text" class="login-input" id="username" placeholder="Enter Username" required>
+                <input type="password" class="login-input" id="password" placeholder="Enter Password" required>
+                <button type="submit" class="login-btn">SIGN IN</button>
+                <button type="button" class="test-login-btn" onclick="testLogin()">Test Login (Direct)</button>
+            </form>
+            <div style="margin-top: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+                <p>For prototype: any username and password works!</p>
+                <p style="margin-top: 0.5rem;">Examples: test/test, admin/123, demo/demo</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content-wrapper" id="mainContent">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="#" class="logo">Notifly</a>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#latest">Latest News</a></li>
+                    <li><a href="templates/submit.html">Submit</a></li>
+                    <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="container">
+            <section class="header-section">
+                <h1>🎓 Campus Newsletter</h1>
+                <p>Stay updated with the latest campus news, events, and announcements</p>
+            </section>
+        </div>
+
+        <!-- Main Page Layout -->
+        <div class="page-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Calendar Widget -->
+                <div class="calendar-widget">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <div class="calendar-title">September 2025</div>
+                            <div class="calendar-month">Today: September 22</div>
+                        </div>
+                        <span style="font-size: 1.2rem;">📅</span>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                        
+                        <div class="calendar-day other-month">31</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day current">22 ✨</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day other-month">1</div>
+                        <div class="calendar-day other-month">2</div>
+                        <div class="calendar-day other-month">3</div>
+                        <div class="calendar-day other-month">4</div>
+                    </div>
+                </div>
+
+                <!-- Quick Updates -->
+                <div class="quick-updates-sidebar">
+                    <h3 class="section-title">⚡ Quick Updates</h3>
+                    <div class="update-item-sidebar">
+                        📚 Library Hours: Extended 24/7 access areas and state-of-the-art technology
+                    </div>
+                    <div class="update-item-sidebar">
+                        🎓 Academic Calendar: Fall semester registration ends October 1st
+                    </div>
+                    <div class="update-item-sidebar">
+                        🏆 Sports Update: Campus volleyball tournament this weekend
+                    </div>
+                    <div class="update-item-sidebar">
+                        💡 Innovation Lab: New 3D printing and VR equipment available
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="newsletter-content">
+                <h2 class="section-title">📰 Latest News</h2>
+                
+                <div class="articles-grid">
+                    <article class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 class="article-title">New Library Extension Opens</h3>
+                            <span style="font-size: 1.5rem;">🎓</span>
+                        </div>
+                        <div class="article-meta">Published on September 20, 2025 | Campus News</div>
+                        <p class="article-excerpt">
+                            The highly anticipated library extension featuring modern study spaces, collaboration rooms, and 
+                            a digital media center is now open to all students. The new facility includes 24/7 access areas and 
+                            state-of-the-art technology.
+                        </p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </article>
+
+                    <article class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 class="article-title">Fall Career Fair Registration</h3>
+                            <span style="font-size: 1.5rem;">💼</span>
+                        </div>
+                        <div class="article-meta">Published on September 19, 2025 | Career Services</div>
+                        <p class="article-excerpt">
+                            Registration is now open for the Fall Career Fair scheduled for October 15th. Over 100 
+                            companies will participate, offering internships and full-time positions across various industries.
+                        </p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </article>
+
+                    <article class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 class="article-title">Research Symposium Call for Papers</h3>
+                            <span style="font-size: 1.5rem;">🔬</span>
+                        </div>
+                        <div class="article-meta">Published on September 18, 2025 | Research Office</div>
+                        <p class="article-excerpt">
+                            Graduate and undergraduate students are invited to submit abstracts for the Annual Research Symposium. 
+                            Deadline for submissions is October 1st. Winners will receive research grants.
+                        </p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </article>
+
+                    <article class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 class="article-title">Innovation Challenge 2025</h3>
+                            <span style="font-size: 1.5rem;">💡</span>
+                        </div>
+                        <div class="article-meta">Published on September 17, 2025 | Innovation Hub</div>
+                        <p class="article-excerpt">
+                            Students are invited to participate in the annual Innovation Challenge. This year's theme focuses on 
+                            sustainable technology solutions. Prize pool worth $50,000 in scholarships and grants.
+                        </p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </article>
+
+                    <article class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 class="article-title">Art Exhibition Opening</h3>
+                            <span style="font-size: 1.5rem;">🎨</span>
+                        </div>
+                        <div class="article-meta">Published on September 16, 2025 | Arts Department</div>
+                        <p class="article-excerpt">
+                            The annual student art exhibition opens next week featuring works from fine arts, digital media, 
+                            and sculpture students. Public reception on September 25th from 6-9 PM.
+                        </p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </article>
+
+                    <article class="article-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 class="article-title">Campus Sustainability Initiative</h3>
+                            <span style="font-size: 1.5rem;">🏆</span>
+                        </div>
+                        <div class="article-meta">Published on September 15, 2025 | Environmental Committee</div>
+                        <p class="article-excerpt">
+                            New campus-wide recycling program launches October 1st. Students can earn rewards for participating 
+                            in sustainability activities. Goal is to achieve carbon neutrality by 2030.
+                        </p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </article>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Fluid Background Container -->
+    <div class="fluid-background-container">
+        <!-- Multi-layered Animated Gradient Overlay -->
+        <div class="gradient-overlay"></div>
+        
+        <!-- Swirling Energy Field -->
+        <div class="energy-field"></div>
+        
+        <!-- Enhanced Floating Orbs -->
+        <div class="floating-orbs">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+
+        <!-- Flowing Wave System -->
+        <div class="wave-system">
+            <div class="fluid-wave"></div>
+            <div class="fluid-wave"></div>
+            <div class="fluid-wave"></div>
+        </div>
+
+        <!-- Enhanced Particle System -->
+        <div class="particle-system">
+            <div class="particle-layer">
+                <div class="particle small" style="left: 5%; animation-delay: 0s;"></div>
+                <div class="particle medium" style="left: 15%; animation-delay: 3s;"></div>
+                <div class="particle large" style="left: 25%; animation-delay: 6s;"></div>
+                <div class="particle small" style="left: 35%; animation-delay: 9s;"></div>
+                <div class="particle medium" style="left: 45%; animation-delay: 12s;"></div>
+                <div class="particle large" style="left: 55%; animation-delay: 15s;"></div>
+                <div class="particle small" style="left: 65%; animation-delay: 18s;"></div>
+                <div class="particle medium" style="left: 75%; animation-delay: 21s;"></div>
+                <div class="particle large" style="left: 85%; animation-delay: 24s;"></div>
+                <div class="particle small" style="left: 95%; animation-delay: 27s;"></div>
+            </div>
+        </div>
+
+        <!-- Morphing Blob System -->
+        <div class="morphing-blobs">
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+        </div>
+
+        <!-- Floating Light Rays -->
+        <div class="light-rays">
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is already logged in
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('notifly_logged_in');
+            
+            if (isLoggedIn === 'true') {
+                showMainContent();
+            } else {
+                showLoginOverlay();
+            }
+        }
+
+        // Show login overlay
+        function showLoginOverlay() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('mainContent').classList.remove('show');
+        }
+
+        // Show main content
+        function showMainContent() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').classList.add('show');
+        }
+
+        // Handle login form submission
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Simple validation - just check if both fields have content
+            if (username && password) {
+                localStorage.setItem('notifly_logged_in', 'true');
+                localStorage.setItem('notifly_username', username);
+                showMainContent();
+            } else {
+                alert('Please enter both username and password');
+            }
+        }
+
+        // Test login function
+        function testLogin() {
+            localStorage.setItem('notifly_logged_in', 'true');
+            localStorage.setItem('notifly_username', 'test-user');
+            showMainContent();
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('notifly_logged_in');
+            localStorage.removeItem('notifly_username');
+            showLoginOverlay();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add form event listener
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+            
+            // Check authentication status
+            checkAuth();
+        });
+    </script>
 </body>
 </html>
