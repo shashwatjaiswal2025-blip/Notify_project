@@ -231,6 +231,83 @@
         .test-link:hover {
             text-decoration: underline;
         }
+
+        .action-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .approve-btn, .decline-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+
+        .approve-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .approve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .decline-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        .decline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .approve-btn:disabled, .decline-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .submission-card {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -240,7 +317,17 @@
             <p>View and manage news submissions</p>
         </div>
 
-        <button class="refresh-btn" onclick="loadSubmissions()">🔄 Refresh Submissions</button>
+        <div style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <button class="refresh-btn" onclick="loadSubmissions()">🔄 Refresh Submissions</button>
+            <a href="newsletters.html" class="refresh-btn" style="text-decoration: none; display: inline-block;">📰 View Approved Newsletters</a>
+            
+            <select id="statusFilter" onchange="filterSubmissions()" style="padding: 0.5rem; border-radius: 8px; border: 2px solid #667eea; background: white; font-weight: 600;">
+                <option value="all">All Submissions</option>
+                <option value="pending" selected>Pending Only</option>
+                <option value="approved">Approved Only</option>
+                <option value="rejected">Rejected Only</option>
+            </select>
+        </div>
 
         <div class="stats" id="stats">
             <!-- Stats will be loaded here -->
@@ -270,6 +357,9 @@
                 const data = await response.json();
                 const submissions = data.submissions || [];
                 
+                // Store submissions globally for filtering
+                allSubmissions = submissions;
+                
                 // Update stats
                 const totalSubmissions = submissions.length;
                 const pendingSubmissions = submissions.filter(s => s.status === 'pending').length;
@@ -295,64 +385,8 @@
                     </div>
                 `;
                 
-                // Display submissions
-                if (submissions.length === 0) {
-                    content.innerHTML = `
-                        <div class="no-submissions">
-                            <h3>No submissions found</h3>
-                            <p>No news submissions have been received yet.</p>
-                            <p>To test the system, go to <a href="http://localhost:8000/templates/submit.html" class="test-link" target="_blank">the submission form</a> and submit some sample data.</p>
-                        </div>
-                    `;
-                } else {
-                    content.innerHTML = `
-                        <div class="submissions-grid">
-                            ${submissions.map(submission => `
-                                <div class="submission-card">
-                                    <div class="submission-header">
-                                        <div>
-                                            <div class="submission-title">${submission.title}</div>
-                                            <span class="submission-category">${submission.category}</span>
-                                        </div>
-                                        <span class="submission-status status-${submission.status}">
-                                            ${submission.status}
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="submission-meta">
-                                        <div class="meta-item">
-                                            <div class="meta-label">Organization</div>
-                                            <div class="meta-value">${submission.organization || 'Not specified'}</div>
-                                        </div>
-                                        <div class="meta-item">
-                                            <div class="meta-label">Contact</div>
-                                            <div class="meta-value">${submission.contact_name || submission.contact_email}</div>
-                                        </div>
-                                        <div class="meta-item">
-                                            <div class="meta-label">Event Date</div>
-                                            <div class="meta-value">${submission.event_date || 'Not specified'}</div>
-                                        </div>
-                                        <div class="meta-item">
-                                            <div class="meta-label">Submitted</div>
-                                            <div class="meta-value">${new Date(submission.submitted_at).toLocaleDateString()}</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="submission-description">
-                                        ${submission.description}
-                                    </div>
-                                    
-                                    ${submission.location ? `
-                                        <div class="meta-item">
-                                            <div class="meta-label">Location</div>
-                                            <div class="meta-value">${submission.location}</div>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                }
+                // Display submissions based on current filter
+                filterSubmissions();
                 
             } catch (error) {
                 console.error('Error loading submissions:', error);
@@ -379,6 +413,308 @@
         
         // Auto-refresh every 30 seconds
         setInterval(loadSubmissions, 30000);
+        
+        // Global variable to store all submissions
+        let allSubmissions = [];
+        
+        // Filter submissions by status
+        function filterSubmissions() {
+            const filter = document.getElementById('statusFilter').value;
+            const content = document.getElementById('content');
+            
+            let filteredSubmissions = allSubmissions;
+            if (filter !== 'all') {
+                filteredSubmissions = allSubmissions.filter(s => s.status === filter);
+            }
+            
+            displaySubmissions(filteredSubmissions);
+        }
+        
+        // Display submissions function (extracted from loadSubmissions)
+        function displaySubmissions(submissions) {
+            const content = document.getElementById('content');
+            
+            if (submissions.length === 0) {
+                const filter = document.getElementById('statusFilter').value;
+                const filterText = filter === 'all' ? '' : ` with status "${filter}"`;
+                content.innerHTML = `
+                    <div class="no-submissions">
+                        <h3>No submissions found</h3>
+                        <p>No submissions${filterText} have been found.</p>
+                        ${filter === 'all' ? '<p>To test the system, go to <a href="http://localhost:8000/templates/submit.html" class="test-link" target="_blank">the submission form</a> and submit some sample data.</p>' : ''}
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="submissions-grid">
+                        ${submissions.map(submission => `
+                            <div class="submission-card" id="submission-${submission.id}">
+                                <div class="submission-header">
+                                    <div>
+                                        <div class="submission-title">${submission.title}</div>
+                                        <span class="submission-category">${submission.category}</span>
+                                    </div>
+                                    <span class="submission-status status-${submission.status}">
+                                        ${submission.status}
+                                    </span>
+                                </div>
+                                
+                                <div class="submission-meta">
+                                    <div class="meta-item">
+                                        <div class="meta-label">Organization</div>
+                                        <div class="meta-value">${submission.organization || 'Not specified'}</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">Contact</div>
+                                        <div class="meta-value">${submission.contact_name || submission.contact_email}</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">Event Date</div>
+                                        <div class="meta-value">${submission.event_date || 'Not specified'}</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">Submitted</div>
+                                        <div class="meta-value">${new Date(submission.submitted_at).toLocaleDateString()}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="submission-description">
+                                    ${submission.description}
+                                </div>
+                                
+                                ${submission.location ? `
+                                    <div class="meta-item">
+                                        <div class="meta-label">Location</div>
+                                        <div class="meta-value">${submission.location}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${submission.status === 'pending' ? `
+                                    <div class="action-buttons">
+                                        <button class="approve-btn" onclick="approveSubmission(${submission.id})">
+                                            ✓ Approve
+                                        </button>
+                                        <button class="decline-btn" onclick="declineSubmission(${submission.id})">
+                                            ✗ Decline
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        
+        // Approve submission function
+        async function approveSubmission(submissionId) {
+            if (!confirm('Are you sure you want to approve this submission?')) {
+                return;
+            }
+            
+            const card = document.getElementById(`submission-${submissionId}`);
+            card.classList.add('processing');
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/submissions/${submissionId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update the submission in the global array
+                    updateSubmissionInArray(submissionId, 'approved');
+                    // Update stats first
+                    updateStats();
+                    // Update the card or remove it based on current filter
+                    updateSubmissionCard(card, 'approved');
+                    // Show success message
+                    showSuccessMessage('Submission approved successfully!');
+                } else {
+                    throw new Error(result.message);
+                }
+                
+            } catch (error) {
+                console.error('Error approving submission:', error);
+                showErrorMessage(`Error approving submission: ${error.message}`);
+                card.classList.remove('processing');
+            }
+        }
+        
+        // Decline submission function
+        async function declineSubmission(submissionId) {
+            if (!confirm('Are you sure you want to decline this submission?')) {
+                return;
+            }
+            
+            const card = document.getElementById(`submission-${submissionId}`);
+            card.classList.add('processing');
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/submissions/${submissionId}/decline`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update the submission in the global array
+                    updateSubmissionInArray(submissionId, 'rejected');
+                    // Update stats first
+                    updateStats();
+                    // Update the card or remove it based on current filter
+                    updateSubmissionCard(card, 'rejected');
+                    // Show success message
+                    showSuccessMessage('Submission declined successfully!');
+                } else {
+                    throw new Error(result.message);
+                }
+                
+            } catch (error) {
+                console.error('Error declining submission:', error);
+                showErrorMessage(`Error declining submission: ${error.message}`);
+                card.classList.remove('processing');
+            }
+        }
+        
+        // Update submission in global array
+        function updateSubmissionInArray(submissionId, newStatus) {
+            const submission = allSubmissions.find(s => s.id === submissionId);
+            if (submission) {
+                submission.status = newStatus;
+            }
+        }
+        
+        // Update submission card status
+        function updateSubmissionCard(card, newStatus) {
+            card.classList.remove('processing');
+            
+            const currentFilter = document.getElementById('statusFilter').value;
+            
+            // Check if this card should be removed based on current filter
+            const shouldRemove = (currentFilter === 'pending' && (newStatus === 'approved' || newStatus === 'rejected'));
+            
+            if (shouldRemove) {
+                // Animate card removal
+                card.style.transform = 'scale(0.8)';
+                card.style.opacity = '0';
+                card.style.transition = 'all 0.3s ease';
+                
+                setTimeout(() => {
+                    card.remove();
+                    // Check if there are any remaining submissions visible
+                    const remainingCards = document.querySelectorAll('.submission-card');
+                    if (remainingCards.length === 0) {
+                        const content = document.getElementById('content');
+                        const filterText = currentFilter === 'pending' ? 'pending submissions' : `${currentFilter} submissions`;
+                        content.innerHTML = `
+                            <div class="no-submissions">
+                                <h3>No ${filterText}</h3>
+                                <p>All visible submissions have been processed. Change the filter to see other submissions.</p>
+                            </div>
+                        `;
+                    }
+                }, 300);
+                return;
+            }
+            
+            // For items that should stay visible, update the status in place
+            const statusBadge = card.querySelector('.submission-status');
+            statusBadge.textContent = newStatus;
+            statusBadge.className = `submission-status status-${newStatus}`;
+            
+            // Remove action buttons with animation
+            const actionButtons = card.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.style.opacity = '0';
+                actionButtons.style.transform = 'scale(0.8)';
+                actionButtons.style.transition = 'all 0.2s ease';
+                setTimeout(() => actionButtons.remove(), 200);
+            }
+            
+            // Add animation to show the change
+            card.style.transform = 'scale(0.98)';
+            card.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                card.style.transform = 'scale(1)';
+                card.style.opacity = '1';
+                card.style.transition = 'all 0.3s ease';
+            }, 200);
+        }
+        
+        // Update stats without full reload
+        function updateStats() {
+            const totalSubmissions = allSubmissions.length;
+            const pendingSubmissions = allSubmissions.filter(s => s.status === 'pending').length;
+            const approvedSubmissions = allSubmissions.filter(s => s.status === 'approved').length;
+            const rejectedSubmissions = allSubmissions.filter(s => s.status === 'rejected').length;
+            
+            const stats = document.getElementById('stats');
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalSubmissions}</div>
+                    <div class="stat-label">Total Submissions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${pendingSubmissions}</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${approvedSubmissions}</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${rejectedSubmissions}</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            `;
+        }
+        
+        // Show success message
+        function showSuccessMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                background: linear-gradient(135deg, #27ae60, #2ecc71);
+                color: white; padding: 1rem 2rem; border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+                font-weight: 600; animation: slideIn 0.3s ease;
+            `;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        // Show error message
+        function showErrorMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: white; padding: 1rem 2rem; border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+                font-weight: 600; animation: slideIn 0.3s ease;
+            `;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
     </script>
 </body>
 </html>

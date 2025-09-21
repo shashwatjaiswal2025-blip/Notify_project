@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Newsletters - Notifly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .newsletter-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .newsletter-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .newsletter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .newsletter-header {
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .newsletter-category {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .newsletter-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .meta-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .newsletter-description {
+            color: #555;
+            line-height: 1.6;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f0f2ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .approved-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+        .loading, .no-newsletters {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .loading {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .no-newsletters h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="admin.html" class="back-btn">← Back to Admin</a>
+            <h1>📰 Approved Newsletters</h1>
+            <p>View all approved newsletter submissions</p>
+        </div>
+
+        <div id="content">
+            <div class="loading">Loading approved newsletters...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadApprovedNewsletters() {
+            const content = document.getElementById('content');
+            content.innerHTML = '<div class="loading">Loading approved newsletters...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/approved-newsletters');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                const newsletters = data.newsletters || [];
+                
+                if (newsletters.length === 0) {
+                    content.innerHTML = `
+                        <div class="no-newsletters">
+                            <h3>No approved newsletters yet</h3>
+                            <p>No newsletters have been approved yet. Go to the admin panel to approve pending submissions.</p>
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <div class="newsletter-grid">
+                            ${newsletters.map(newsletter => `
+                                <div class="newsletter-card">
+                                    <div class="newsletter-header">
+                                        <div class="newsletter-title">${newsletter.title}</div>
+                                        <span class="newsletter-category">${newsletter.category}</span>
+                                        <span class="approved-badge">✓ Approved</span>
+                                    </div>
+                                    
+                                    <div class="newsletter-meta">
+                                        ${newsletter.organization ? `
+                                            <div class="meta-item">
+                                                <div class="meta-label">Organization</div>
+                                                <div class="meta-value">${newsletter.organization}</div>
+                                            </div>
+                                        ` : ''}
+                                        ${newsletter.contact_name || newsletter.contact_email ? `
+                                            <div class="meta-item">
+                                                <div class="meta-label">Contact</div>
+                                                <div class="meta-value">${newsletter.contact_name || newsletter.contact_email}</div>
+                                            </div>
+                                        ` : ''}
+                                        ${newsletter.event_date ? `
+                                            <div class="meta-item">
+                                                <div class="meta-label">Event Date</div>
+                                                <div class="meta-value">${newsletter.event_date}</div>
+                                            </div>
+                                        ` : ''}
+                                        <div class="meta-item">
+                                            <div class="meta-label">Approved On</div>
+                                            <div class="meta-value">${new Date(newsletter.approved_at).toLocaleDateString()}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="newsletter-description">
+                                        ${newsletter.description}
+                                    </div>
+                                    
+                                    ${newsletter.location ? `
+                                        <div class="meta-item" style="margin-top: 1rem;">
+                                            <div class="meta-label">Location</div>
+                                            <div class="meta-value">${newsletter.location}</div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading newsletters:', error);
+                content.innerHTML = `
+                    <div class="no-newsletters">
+                        <h3>Error Loading Newsletters</h3>
+                        <p>Could not connect to the backend server.</p>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Load newsletters when page loads
+        document.addEventListener('DOMContentLoaded', loadApprovedNewsletters);
+    </script>
+</body>
+</html>
