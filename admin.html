@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Submissions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .submissions-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .submission-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .submission-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .submission-category {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .submission-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .meta-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .submission-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f0f2ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .submission-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #e74c3c;
+            background: #f8d7da;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .no-submissions {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .no-submissions h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .test-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .test-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗞️ Notifly Admin</h1>
+            <p>View and manage news submissions</p>
+        </div>
+
+        <button class="refresh-btn" onclick="loadSubmissions()">🔄 Refresh Submissions</button>
+
+        <div class="stats" id="stats">
+            <!-- Stats will be loaded here -->
+        </div>
+
+        <div id="content">
+            <div class="loading">Loading submissions...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadSubmissions() {
+            const content = document.getElementById('content');
+            const stats = document.getElementById('stats');
+            
+            content.innerHTML = '<div class="loading">Loading submissions...</div>';
+            stats.innerHTML = '';
+            
+            try {
+                // Load submissions
+                const response = await fetch('http://localhost:5000/api/submissions');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                const submissions = data.submissions || [];
+                
+                // Update stats
+                const totalSubmissions = submissions.length;
+                const pendingSubmissions = submissions.filter(s => s.status === 'pending').length;
+                const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
+                const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
+                
+                stats.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${totalSubmissions}</div>
+                        <div class="stat-label">Total Submissions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${pendingSubmissions}</div>
+                        <div class="stat-label">Pending Review</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${approvedSubmissions}</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${rejectedSubmissions}</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                `;
+                
+                // Display submissions
+                if (submissions.length === 0) {
+                    content.innerHTML = `
+                        <div class="no-submissions">
+                            <h3>No submissions found</h3>
+                            <p>No news submissions have been received yet.</p>
+                            <p>To test the system, go to <a href="http://localhost:8000/templates/submit.html" class="test-link" target="_blank">the submission form</a> and submit some sample data.</p>
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <div class="submissions-grid">
+                            ${submissions.map(submission => `
+                                <div class="submission-card">
+                                    <div class="submission-header">
+                                        <div>
+                                            <div class="submission-title">${submission.title}</div>
+                                            <span class="submission-category">${submission.category}</span>
+                                        </div>
+                                        <span class="submission-status status-${submission.status}">
+                                            ${submission.status}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="submission-meta">
+                                        <div class="meta-item">
+                                            <div class="meta-label">Organization</div>
+                                            <div class="meta-value">${submission.organization || 'Not specified'}</div>
+                                        </div>
+                                        <div class="meta-item">
+                                            <div class="meta-label">Contact</div>
+                                            <div class="meta-value">${submission.contact_name || submission.contact_email}</div>
+                                        </div>
+                                        <div class="meta-item">
+                                            <div class="meta-label">Event Date</div>
+                                            <div class="meta-value">${submission.event_date || 'Not specified'}</div>
+                                        </div>
+                                        <div class="meta-item">
+                                            <div class="meta-label">Submitted</div>
+                                            <div class="meta-value">${new Date(submission.submitted_at).toLocaleDateString()}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="submission-description">
+                                        ${submission.description}
+                                    </div>
+                                    
+                                    ${submission.location ? `
+                                        <div class="meta-item">
+                                            <div class="meta-label">Location</div>
+                                            <div class="meta-value">${submission.location}</div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                content.innerHTML = `
+                    <div class="error">
+                        <h3>Error Loading Submissions</h3>
+                        <p>Could not connect to the backend server.</p>
+                        <p>Make sure the Flask server is running on port 5000.</p>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+                
+                stats.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">❌</div>
+                        <div class="stat-label">Connection Error</div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Load submissions when page loads
+        document.addEventListener('DOMContentLoaded', loadSubmissions);
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadSubmissions, 30000);
+    </script>
+</body>
+</html>

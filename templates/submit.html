@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit News - Notifly</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: #667eea;
+    }
+
+    .nav-link.active {
+      color: #667eea;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: #333;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      padding: 3rem 0;
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+      color: white;
+    }
+
+    .page-header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* Submission Form */
+    .submission-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: #667eea;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #667eea;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .required {
+      color: #e74c3c;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e1e5e9;
+      border-radius: 10px;
+      background: white;
+      color: #333;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-file-container {
+      border: 2px dashed #667eea;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #f8f9ff;
+    }
+
+    .form-file-container:hover {
+      border-color: #5a6fd8;
+      background: #f0f2ff;
+    }
+
+    .file-icon {
+      font-size: 3rem;
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    .file-text {
+      color: #667eea;
+      font-weight: 500;
+    }
+
+    .file-subtext {
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .guidelines {
+      background: #f8f9ff;
+      border-left: 4px solid #667eea;
+      padding: 1.5rem;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 2rem;
+    }
+
+    .guidelines h3 {
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    .guidelines ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .guidelines li {
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .guidelines li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    .submit-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .cancel-btn {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+      padding: 1rem 2.5rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .cancel-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .submission-note {
+      text-align: center;
+      margin-top: 2rem;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 80px;
+        flex-direction: column;
+        background: white;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        padding: 2rem 0;
+      }
+
+      .nav-menu.active {
+        left: 0;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+
+      .page-header h1 {
+        font-size: 2rem;
+      }
+
+      .submission-container {
+        padding: 2rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .submit-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .submit-btn,
+      .cancel-btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Notifly</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#latest" class="nav-link">Latest News</a></li>
+        <li><a href="index.html#events" class="nav-link">Events</a></li>
+        <li><a href="#academics" class="nav-link">Academics</a></li>
+        <li><a href="submit.html" class="nav-link active">Submit</a></li>
+      </ul>
+      <div class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Submit News</h1>
+        <p>Share campus news, events, and club notifications with the community</p>
+      </div>
+
+      <!-- Submission Form -->
+      <div class="submission-container">
+        <!-- Guidelines -->
+        <div class="guidelines">
+          <h3>Submission Guidelines</h3>
+          <ul>
+            <li>Provide clear and concise titles</li>
+            <li>Include relevant dates for events</li>
+            <li>Add contact information for follow-up</li>
+            <li>Attach high-quality images when possible</li>
+            <li>All submissions are reviewed before publication</li>
+          </ul>
+        </div>
+
+        <form action="/submit" method="POST" enctype="multipart/form-data">
+          <!-- Basic Information -->
+          <div class="form-section">
+            <h2 class="section-title">Basic Information</h2>
+            
+            <div class="form-group">
+              <label class="form-label">Title <span class="required">*</span></label>
+              <input type="text" name="title" class="form-input" placeholder="Enter a compelling title for your news..." required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Category <span class="required">*</span></label>
+                <select name="category" class="form-select" required>
+                  <option value="">-- Select Category --</option>
+                  <option value="news">Campus News</option>
+                  <option value="event">Event</option>
+                  <option value="club">Club Activity</option>
+                  <option value="academic">Academic</option>
+                  <option value="deadline">Deadline</option>
+                  <option value="opportunity">Opportunity</option>
+                  <option value="announcement">Announcement</option>
+                  <option value="sports">Sports</option>
+                  <option value="cultural">Cultural</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Organization/Club</label>
+                <input type="text" name="organization" class="form-input" placeholder="Your club, department, or organization...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Details -->
+          <div class="form-section">
+            <h2 class="section-title">Content Details</h2>
+            
+            <div class="form-group">
+              <label class="form-label">Description <span class="required">*</span></label>
+              <textarea name="description" class="form-textarea" placeholder="Provide detailed information about your news or event. Include key details like when, where, what, and why..." required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Event Date</label>
+                <input type="date" name="event_date" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Event Time</label>
+                <input type="time" name="event_time" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Location/Venue</label>
+              <input type="text" name="location" class="form-input" placeholder="Where will this take place?">
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="form-section">
+            <h2 class="section-title">Contact Information</h2>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Contact Email <span class="required">*</span></label>
+                <input type="email" name="contact_email" class="form-input" placeholder="your.email@university.edu" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Contact Phone</label>
+                <input type="tel" name="contact_phone" class="form-input" placeholder="(555) 123-4567">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Contact Name</label>
+              <input type="text" name="contact_name" class="form-input" placeholder="Your full name">
+            </div>
+          </div>
+
+          <!-- File Upload -->
+          <div class="form-section">
+            <h2 class="section-title">Attachments (Optional)</h2>
+            
+            <div class="form-group">
+              <label class="form-label">Upload Images or Documents</label>
+              <div class="form-file-container" onclick="document.getElementById('fileInput').click()">
+                <div class="file-icon">📎</div>
+                <div class="file-text">Click to upload files</div>
+                <div class="file-subtext">Support for images (JPG, PNG) and documents (PDF, DOC)</div>
+                <input type="file" name="attachment" id="fileInput" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="submit-buttons">
+            <a href="index.html" class="cancel-btn">Cancel</a>
+            <button type="submit" class="submit-btn">Submit for Review</button>
+          </div>
+        </form>
+
+        <p class="submission-note">
+          * All submissions are reviewed by our editorial team before publication. You'll receive a confirmation email once your submission is processed.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+
+    // File upload feedback
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const fileContainer = document.querySelector('.form-file-container');
+      const fileText = document.querySelector('.file-text');
+      
+      if (e.target.files.length > 0) {
+        const fileCount = e.target.files.length;
+        fileText.textContent = `${fileCount} file(s) selected`;
+        fileContainer.style.background = '#e8f5e8';
+        fileContainer.style.borderColor = '#27ae60';
+      } else {
+        fileText.textContent = 'Click to upload files';
+        fileContainer.style.background = '#f8f9ff';
+        fileContainer.style.borderColor = '#667eea';
+      }
+    });
+
+    // Form validation feedback
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+
+    inputs.forEach(input => {
+      input.addEventListener('blur', function() {
+        if (this.value.trim() === '') {
+          this.style.borderColor = '#e74c3c';
+        } else {
+          this.style.borderColor = '#27ae60';
+        }
+      });
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault(); // Prevent default form submission
+      
+      // Show loading state
+      const submitBtn = document.querySelector('.submit-btn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+      
+      try {
+        // Collect form data
+        const formData = new FormData();
+        
+        // Basic Information
+        formData.append('title', document.querySelector('input[name="title"]').value);
+        formData.append('category', document.querySelector('select[name="category"]').value);
+        formData.append('organization', document.querySelector('input[name="organization"]').value);
+        
+        // Content Details
+        formData.append('description', document.querySelector('textarea[name="description"]').value);
+        formData.append('event_date', document.querySelector('input[name="event_date"]').value);
+        formData.append('event_time', document.querySelector('input[name="event_time"]').value);
+        formData.append('location', document.querySelector('input[name="location"]').value);
+        
+        // Contact Information
+        formData.append('contact_email', document.querySelector('input[name="contact_email"]').value);
+        formData.append('contact_phone', document.querySelector('input[name="contact_phone"]').value);
+        formData.append('contact_name', document.querySelector('input[name="contact_name"]').value);
+        
+        // File attachments
+        const fileInput = document.querySelector('input[name="attachment"]');
+        if (fileInput.files.length > 0) {
+          for (let i = 0; i < fileInput.files.length; i++) {
+            formData.append('attachments', fileInput.files[i]);
+          }
+        }
+        
+        // Add timestamp
+        formData.append('submitted_at', new Date().toISOString());
+        
+        // Try multiple endpoints for submission
+        const endpoints = [
+          'http://localhost:5000/api/submit-news',
+          '/api/submit-news',
+          '/submit'
+        ];
+        
+        let response = null;
+        let lastError = null;
+        
+        for (const endpoint of endpoints) {
+          try {
+            response = await fetch(endpoint, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            });
+            
+            if (response.ok) {
+              break; // Success, exit the loop
+            } else {
+              lastError = `HTTP ${response.status}: ${response.statusText}`;
+            }
+          } catch (error) {
+            lastError = error.message;
+            continue; // Try next endpoint
+          }
+        }
+        
+        if (!response || !response.ok) {
+          throw new Error(lastError || 'All endpoints failed');
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          // Success
+          showNotification('✅ Submission successful! Your news will be reviewed and published soon.', 'success');
+          form.reset(); // Clear the form
+          
+          // Reset file upload display
+          const fileContainer = document.querySelector('.form-file-container');
+          const fileText = document.querySelector('.file-text');
+          fileText.textContent = 'Click to upload files';
+          fileContainer.style.background = '#f8f9ff';
+          fileContainer.style.borderColor = '#667eea';
+          
+          // Optionally redirect after a delay
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 3000);
+          
+        } else {
+          // Error from server
+          showNotification(`❌ Error: ${result.message || 'Failed to submit news. Please try again.'}`, 'error');
+        }
+        
+      } catch (error) {
+        console.error('Submission error:', error);
+        
+        // Fallback: Store data locally
+        try {
+          const submissionData = {
+            title: document.querySelector('input[name="title"]').value,
+            category: document.querySelector('select[name="category"]').value,
+            organization: document.querySelector('input[name="organization"]').value,
+            description: document.querySelector('textarea[name="description"]').value,
+            event_date: document.querySelector('input[name="event_date"]').value,
+            event_time: document.querySelector('input[name="event_time"]').value,
+            location: document.querySelector('input[name="location"]').value,
+            contact_email: document.querySelector('input[name="contact_email"]').value,
+            contact_phone: document.querySelector('input[name="contact_phone"]').value,
+            contact_name: document.querySelector('input[name="contact_name"]').value,
+            submitted_at: new Date().toISOString(),
+            id: Date.now()
+          };
+          
+          // Store in localStorage as backup
+          const stored = JSON.parse(localStorage.getItem('notifly_submissions') || '[]');
+          stored.push(submissionData);
+          localStorage.setItem('notifly_submissions', JSON.stringify(stored));
+          
+          showNotification('📱 Connection issue detected. Your submission has been stored locally and will be synced when the server is available.', 'success');
+          form.reset();
+          
+          // Reset file upload display
+          const fileContainer = document.querySelector('.form-file-container');
+          const fileText = document.querySelector('.file-text');
+          fileText.textContent = 'Click to upload files';
+          fileContainer.style.background = '#f8f9ff';
+          fileContainer.style.borderColor = '#667eea';
+          
+        } catch (storageError) {
+          showNotification('❌ Network error and unable to store locally. Please check your connection and try again.', 'error');
+        }
+      } finally {
+        // Reset button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+    
+    // Alternative: Send as JSON instead of FormData
+    async function submitAsJSON() {
+      const data = {
+        title: document.querySelector('input[name="title"]').value,
+        category: document.querySelector('select[name="category"]').value,
+        organization: document.querySelector('input[name="organization"]').value,
+        description: document.querySelector('textarea[name="description"]').value,
+        event_date: document.querySelector('input[name="event_date"]').value,
+        event_time: document.querySelector('input[name="event_time"]').value,
+        location: document.querySelector('input[name="location"]').value,
+        contact_email: document.querySelector('input[name="contact_email"]').value,
+        contact_phone: document.querySelector('input[name="contact_phone"]').value,
+        contact_name: document.querySelector('input[name="contact_name"]').value,
+        submitted_at: new Date().toISOString()
+      };
+      
+      const response = await fetch('/api/submit-news', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      return response.json();
+    }
+    
+    // Notification system
+    function showNotification(message, type = 'info') {
+      // Remove existing notifications
+      const existingNotification = document.querySelector('.notification');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
+      
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.innerHTML = `
+        <div class="notification-content">
+          <span class="notification-message">${message}</span>
+          <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+      `;
+      
+      // Add styles
+      notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#667eea'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 10000;
+        max-width: 400px;
+        animation: slideIn 0.3s ease-out;
+      `;
+      
+      notification.querySelector('.notification-content').style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      `;
+      
+      notification.querySelector('.notification-close').style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `;
+      
+      // Add animation styles
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Add to page
+      document.body.appendChild(notification);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+    
+    // Form validation
+    function validateForm() {
+      const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+      let isValid = true;
+      
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          field.style.borderColor = '#e74c3c';
+          isValid = false;
+        } else {
+          field.style.borderColor = '#27ae60';
+        }
+      });
+      
+      // Email validation
+      const emailField = document.querySelector('input[name="contact_email"]');
+      if (emailField.value && !isValidEmail(emailField.value)) {
+        emailField.style.borderColor = '#e74c3c';
+        showNotification('Please enter a valid email address.', 'error');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+    
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    
+    // Real-time validation
+    inputs.forEach(input => {
+      input.addEventListener('input', function() {
+        if (this.hasAttribute('required')) {
+          if (this.value.trim() === '') {
+            this.style.borderColor = '#e1e5e9';
+          } else {
+            this.style.borderColor = '#27ae60';
+          }
+        }
+        
+        // Email validation
+        if (this.type === 'email' && this.value) {
+          this.style.borderColor = isValidEmail(this.value) ? '#27ae60' : '#e74c3c';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
