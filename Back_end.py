@@ -70,7 +70,7 @@ def fetch_gmail():
                     received_date = None
                 emails.append((subject, sender, body, received_date))
         print(i)
-        if i>=25:
+        if i>=10:
             break
 
     mail.logout()
