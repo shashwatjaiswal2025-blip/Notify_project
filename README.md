@@ -1,1 +1,1 @@
-# Priority Sorting and Upcoming Deadlines/Events Calendar Using Mail Processing
+# Local Processing Using Ollama Models
