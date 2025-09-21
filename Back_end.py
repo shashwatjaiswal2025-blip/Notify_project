@@ -23,7 +23,8 @@ def init_db():
             id SERIAL PRIMARY KEY,
             subject TEXT,
             sender TEXT,
-            body TEXT
+            body TEXT,
+            received_date TIMESTAMP
         )
     """)
     conn.commit()
@@ -41,6 +42,7 @@ def fetch_gmail():
     email_ids = data[0].split()
     emails = []
     i=0
+    print("For loop starts")
     for eid in email_ids:
         i+=1
         typ, msg_data = mail.fetch(eid, "(RFC822)")
@@ -60,10 +62,12 @@ def fetch_gmail():
                 else:
                     charset = msg.get_content_charset() or "utf-8"
                     body = msg.get_payload(decode=True).decode(charset, errors="ignore")
-                emails.append((subject, sender, body))
+                received_date = msg.get('Date')
+                emails.append((subject, sender, body, received_date))
+        print(i)
         if i>=10:
             break
-        
+
     mail.logout()
     print(f"Fetched {len(emails)} emails from Gmail.")
     return emails
@@ -71,10 +75,10 @@ def fetch_gmail():
 # --- Store Emails ---
 def store_emails(conn, emails):
     cur = conn.cursor()
-    for subject, sender, body in emails:
+    for subject, sender, body, received_date in emails:
         cur.execute(
-            "INSERT INTO emails (subject, sender, body) VALUES (%s, %s, %s)",
-            (subject, sender, body)
+            "INSERT INTO emails (subject, sender, body, received_date) VALUES (%s, %s, %s, %s)",
+            (subject, sender, body, received_date)
         )
     conn.commit()
     cur.close()
