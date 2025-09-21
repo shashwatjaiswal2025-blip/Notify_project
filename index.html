@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add 10 to Number</title>
+</head>
+<body>
+    <h1>Enter a Number</h1>
+    <form method="POST">
+        <input type="number" name="number" placeholder="Enter a number" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if result is not none %}
+        <p>Result: {{ result }}</p>
+    {% endif %}
+</body>
+</html>

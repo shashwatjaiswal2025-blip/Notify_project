@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login Page</title>
+  <style>
+    body {
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .login-box {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 500px;
+      max-width: 95vw;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 32px 28px;
+      box-sizing: border-box;
+    }
+    .login-box h2 {
+      color: #fff;
+      margin-bottom: 28px;
+      font-weight: normal;
+    }
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #222;
+      color: #fff;
+      font-size: 16px;
+    }
+    .login-box input[type="submit"] {
+      width: 100%;
+      padding: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background: #000000;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .login-box input[type="submit"]:hover {
+      background: #00796b;
+    }
+    .login-box p {
+      color: #fff;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <form class="login-box" id="loginForm" method="POST" action="/login">
+    <h2>Login</h2>
+    <input type="text" id="username" name="username" placeholder="Username" required />
+    <input type="password" id="password" name="password" placeholder="Password" required />
+    <input type="submit" value="Sign In" />
+    <p>nff {{ pwd }}</p>
+  </form>
+</body>
+</html>
