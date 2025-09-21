@@ -1,12 +1,12 @@
 import psycopg2
-
-# Database credentials (update as needed)
+# Database credentials
 DB_HOST = "localhost"
 DB_NAME = "notifly_db"
 DB_USER = "postgres"
 DB_PASSWORD = "pass"
-DB_HOST = "localhost"
 DB_PORT = "5432"
+
+def create_users_table(conn):
     with conn.cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -33,7 +33,7 @@ def add_user(conn, username, password):
 def main():
     try:
         conn = psycopg2.connect(
-            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASS
+            host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
         )
         create_users_table(conn)
         while True:
