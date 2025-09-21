@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .submission { border: 1px solid #ccc; margin: 10px 0; padding: 15px; }
+        .buttons { margin-top: 10px; }
+        button { margin: 5px; padding: 10px 20px; }
+        .approve { background: green; color: white; }
+        .decline { background: red; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Debug Admin Interface</h1>
+    <button onclick="loadSubmissions()">Load Submissions</button>
+    <div id="content">Loading...</div>
+
+    <script>
+        async function loadSubmissions() {
+            try {
+                const response = await fetch('http://localhost:5000/api/submissions');
+                const data = await response.json();
+                const submissions = data.submissions || [];
+                
+                const content = document.getElementById('content');
+                content.innerHTML = `
+                    <h3>Total submissions: ${submissions.length}</h3>
+                    ${submissions.map(submission => `
+                        <div class="submission">
+                            <h4>${submission.title}</h4>
+                            <p><strong>Status:</strong> ${submission.status}</p>
+                            <p><strong>ID:</strong> ${submission.id}</p>
+                            <p><strong>Description:</strong> ${submission.description}</p>
+                            ${submission.status === 'pending' ? `
+                                <div class="buttons">
+                                    <button class="approve" onclick="approveSubmission(${submission.id})">Approve</button>
+                                    <button class="decline" onclick="declineSubmission(${submission.id})">Decline</button>
+                                </div>
+                            ` : `<p><em>Status: ${submission.status} - No buttons needed</em></p>`}
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                document.getElementById('content').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function approveSubmission(id) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/submissions/${id}/approve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                alert(result.message);
+                loadSubmissions();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function declineSubmission(id) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/submissions/${id}/decline`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                alert(result.message);
+                loadSubmissions();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Load on page load
+        loadSubmissions();
+    </script>
+</body>
+</html>

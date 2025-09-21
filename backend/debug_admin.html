@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Admin - Check Buttons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .submission {
+            background: white;
+            margin: 10px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        .approve-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-right: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .decline-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .status {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .pending { background: #fff3cd; color: #856404; }
+        .approved { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🛠️ Debug Admin Interface</h1>
+    <p>This page will help debug the approve/decline button issue.</p>
+    
+    <div id="debug-info">
+        <h3>Debug Information:</h3>
+        <p id="api-status">Checking API connection...</p>
+        <p id="submission-count">Checking submissions...</p>
+    </div>
+    
+    <div id="submissions">
+        <p>Loading submissions...</p>
+    </div>
+
+    <script>
+        async function debugAdmin() {
+            const debugInfo = document.getElementById('debug-info');
+            const apiStatus = document.getElementById('api-status');
+            const submissionCount = document.getElementById('submission-count');
+            const submissionsDiv = document.getElementById('submissions');
+            
+            console.log('🛠️ Starting debug...');
+            
+            try {
+                // Test API connection
+                console.log('📡 Testing API connection...');
+                const response = await fetch('http://localhost:5000/api/submissions');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ API Response:', data);
+                
+                apiStatus.textContent = '✅ API Connection: SUCCESS';
+                apiStatus.style.color = 'green';
+                
+                const submissions = data.submissions || [];
+                submissionCount.textContent = `📊 Total Submissions: ${submissions.length}`;
+                
+                if (submissions.length === 0) {
+                    submissionsDiv.innerHTML = '<p>❌ No submissions found!</p>';
+                    return;
+                }
+                
+                // Display submissions with buttons
+                let html = '<h3>Submissions with Buttons:</h3>';
+                
+                submissions.forEach(submission => {
+                    console.log(`📝 Processing submission ${submission.id}: ${submission.title} (${submission.status})`);
+                    
+                    html += `
+                        <div class="submission">
+                            <h4>${submission.title}</h4>
+                            <p><strong>Status:</strong> <span class="status ${submission.status}">${submission.status.toUpperCase()}</span></p>
+                            <p><strong>Category:</strong> ${submission.category}</p>
+                            <p><strong>Description:</strong> ${submission.description}</p>
+                            <p><strong>Organization:</strong> ${submission.organization}</p>
+                            
+                            ${submission.status === 'pending' ? `
+                                <div class="buttons">
+                                    <button class="approve-btn" onclick="testApprove(${submission.id})">
+                                        ✓ APPROVE
+                                    </button>
+                                    <button class="decline-btn" onclick="testDecline(${submission.id})">
+                                        ✗ DECLINE
+                                    </button>
+                                </div>
+                                <p><em>👆 These buttons should be visible for pending submissions!</em></p>
+                            ` : `
+                                <p><em>No buttons shown - submission is ${submission.status}</em></p>
+                            `}
+                        </div>
+                    `;
+                });
+                
+                submissionsDiv.innerHTML = html;
+                
+                // Count pending submissions
+                const pendingCount = submissions.filter(s => s.status === 'pending').length;
+                console.log(`🔄 Pending submissions: ${pendingCount}`);
+                
+                if (pendingCount === 0) {
+                    submissionsDiv.innerHTML += '<p>⚠️ No pending submissions - buttons will not appear!</p>';
+                }
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                apiStatus.textContent = '❌ API Connection: FAILED - ' + error.message;
+                apiStatus.style.color = 'red';
+                submissionsDiv.innerHTML = `<p>❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function testApprove(id) {
+            if (!confirm(`Test approve submission ${id}?`)) return;
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/submissions/${id}/approve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                alert(`Approve result: ${JSON.stringify(result)}`);
+                
+                if (result.success) {
+                    // Reload to see changes
+                    location.reload();
+                }
+                
+            } catch (error) {
+                alert(`Approve error: ${error.message}`);
+            }
+        }
+        
+        async function testDecline(id) {
+            if (!confirm(`Test decline submission ${id}?`)) return;
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/submissions/${id}/decline`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                alert(`Decline result: ${JSON.stringify(result)}`);
+                
+                if (result.success) {
+                    // Reload to see changes
+                    location.reload();
+                }
+                
+            } catch (error) {
+                alert(`Decline error: ${error.message}`);
+            }
+        }
+        
+        // Load when page loads
+        document.addEventListener('DOMContentLoaded', debugAdmin);
+    </script>
+</body>
+</html>

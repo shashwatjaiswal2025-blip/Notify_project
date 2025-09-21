@@ -31,6 +31,7 @@ def init_db():
         )
     ''')
     
+    # Create approved_newsletters table for storing only approved submissions
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS approved_newsletters (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -200,49 +201,54 @@ def get_submissions():
             'message': f'Error retrieving submissions: {str(e)}'
         }), 500
 
-@app.route('/api/submissions/<int:submission_id>/approve', methods=['POST', 'OPTIONS'])
+@app.route('/api/submissions/<int:submission_id>/approve', methods=['POST'])
 def approve_submission(submission_id):
-    if request.method == 'OPTIONS':
-        response = jsonify({'status': 'ok'})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With')
-        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-        return response
-    
     try:
         conn = sqlite3.connect('notifly.db')
         cursor = conn.cursor()
         
-        # Check if submission exists and is pending
-        cursor.execute('SELECT * FROM submissions WHERE id = ? AND status = "pending"', (submission_id,))
+        # Get the submission details
+        cursor.execute('SELECT * FROM submissions WHERE id = ?', (submission_id,))
         submission = cursor.fetchone()
         
         if not submission:
             conn.close()
             return jsonify({
                 'success': False,
-                'message': 'Submission not found or already processed'
+                'message': 'Submission not found'
             }), 404
         
-        # Update status to approved
-        cursor.execute('UPDATE submissions SET status = "approved" WHERE id = ?', (submission_id,))
+        # Update submission status to approved
+        cursor.execute('UPDATE submissions SET status = ? WHERE id = ?', ('approved', submission_id))
         
         # Copy to approved_newsletters table
         cursor.execute('''
             INSERT INTO approved_newsletters 
             (submission_id, title, category, organization, description, event_date, event_time, 
              location, contact_email, contact_phone, contact_name, submitted_at, approved_at)
-            SELECT id, title, category, organization, description, event_date, event_time, 
-                   location, contact_email, contact_phone, contact_name, submitted_at, ?
-            FROM submissions WHERE id = ?
-        ''', (datetime.now().isoformat(), submission_id))
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            submission[0],  # id
+            submission[1],  # title
+            submission[2],  # category
+            submission[3],  # organization
+            submission[4],  # description
+            submission[5],  # event_date
+            submission[6],  # event_time
+            submission[7],  # location
+            submission[8],  # contact_email
+            submission[9],  # contact_phone
+            submission[10], # contact_name
+            submission[11], # submitted_at
+            datetime.now().isoformat()  # approved_at
+        ))
         
         conn.commit()
         conn.close()
         
         return jsonify({
             'success': True,
-            'message': 'Submission approved successfully'
+            'message': 'Submission approved successfully!'
         })
         
     except Exception as e:
@@ -251,39 +257,32 @@ def approve_submission(submission_id):
             'message': f'Error approving submission: {str(e)}'
         }), 500
 
-@app.route('/api/submissions/<int:submission_id>/decline', methods=['POST', 'OPTIONS'])
+@app.route('/api/submissions/<int:submission_id>/decline', methods=['POST'])
 def decline_submission(submission_id):
-    if request.method == 'OPTIONS':
-        response = jsonify({'status': 'ok'})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With')
-        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-        return response
-    
     try:
         conn = sqlite3.connect('notifly.db')
         cursor = conn.cursor()
         
-        # Check if submission exists and is pending
-        cursor.execute('SELECT * FROM submissions WHERE id = ? AND status = "pending"', (submission_id,))
+        # Check if submission exists
+        cursor.execute('SELECT id FROM submissions WHERE id = ?', (submission_id,))
         submission = cursor.fetchone()
         
         if not submission:
             conn.close()
             return jsonify({
                 'success': False,
-                'message': 'Submission not found or already processed'
+                'message': 'Submission not found'
             }), 404
         
-        # Update status to rejected
-        cursor.execute('UPDATE submissions SET status = "rejected" WHERE id = ?', (submission_id,))
+        # Update submission status to rejected
+        cursor.execute('UPDATE submissions SET status = ? WHERE id = ?', ('rejected', submission_id))
         
         conn.commit()
         conn.close()
         
         return jsonify({
             'success': True,
-            'message': 'Submission declined successfully'
+            'message': 'Submission declined successfully!'
         })
         
     except Exception as e:
@@ -330,5 +329,8 @@ if __name__ == '__main__':
     print("- http://localhost:5000/api/test")
     print("- http://localhost:5000/api/submit-news")
     print("- http://localhost:5000/api/submissions")
+    print("- http://localhost:5000/api/approved-newsletters")
+    print("- POST http://localhost:5000/api/submissions/{id}/approve")
+    print("- POST http://localhost:5000/api/submissions/{id}/decline")
     
     app.run(debug=True, host='0.0.0.0', port=5000)

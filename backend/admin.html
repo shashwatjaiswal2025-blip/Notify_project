@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifly Admin Interface</title>
+    <title>Working Admin Interface</title>
     <style>
         * {
             margin: 0;
@@ -50,13 +50,12 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 1rem 2rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
         .refresh-btn:hover {
@@ -134,44 +133,6 @@
             text-transform: uppercase;
         }
 
-        .submission-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .meta-label {
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 0.3rem;
-        }
-
-        .meta-value {
-            color: #333;
-            font-weight: 500;
-        }
-
-        .submission-description {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f0f2ff;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
         .submission-status {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -197,6 +158,16 @@
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+
+        .submission-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f0f2ff;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
         }
 
         .action-buttons {
@@ -246,9 +217,20 @@
             background: #95a5a6;
         }
 
-        .processing {
-            opacity: 0.7;
-            pointer-events: none;
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #e74c3c;
+            background: #f8d7da;
+            border-radius: 10px;
+            margin: 1rem 0;
         }
 
         .toast-message {
@@ -274,43 +256,6 @@
         .toast-error {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
         }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #667eea;
-            font-size: 1.2rem;
-        }
-
-        .error {
-            text-align: center;
-            padding: 2rem;
-            color: #e74c3c;
-            background: #f8d7da;
-            border-radius: 10px;
-            margin: 1rem 0;
-        }
-
-        .no-submissions {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-        }
-
-        .no-submissions h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .test-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .test-link:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -334,6 +279,9 @@
     </div>
 
     <script>
+        // Global variables
+        let allSubmissions = [];
+        
         // Utility function to escape HTML
         function escapeHtml(text) {
             if (!text) return '';
@@ -390,13 +338,13 @@
                 }
                 
                 const data = await response.json();
-                const submissions = data.submissions || [];
+                allSubmissions = data.submissions || [];
                 
                 // Update stats
-                const totalSubmissions = submissions.length;
-                const pendingSubmissions = submissions.filter(s => s.status === 'pending').length;
-                const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
-                const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
+                const totalSubmissions = allSubmissions.length;
+                const pendingSubmissions = allSubmissions.filter(s => s.status === 'pending').length;
+                const approvedSubmissions = allSubmissions.filter(s => s.status === 'approved').length;
+                const rejectedSubmissions = allSubmissions.filter(s => s.status === 'rejected').length;
                 
                 stats.innerHTML = `
                     <div class="stat-card">
@@ -418,18 +366,17 @@
                 `;
                 
                 // Display submissions
-                if (submissions.length === 0) {
+                if (allSubmissions.length === 0) {
                     content.innerHTML = `
                         <div class="no-submissions">
                             <h3>No submissions found</h3>
                             <p>No news submissions have been received yet.</p>
-                            <p>To test the system, go to <a href="http://localhost:8000/templates/submit.html" class="test-link" target="_blank">the submission form</a> and submit some sample data.</p>
                         </div>
                     `;
                 } else {
                     content.innerHTML = `
                         <div class="submissions-grid">
-                            ${submissions.map(submission => `
+                            ${allSubmissions.map(submission => `
                                 <div class="submission-card" id="submission-${submission.id}">
                                     <div class="submission-header">
                                         <div>
@@ -441,35 +388,13 @@
                                         </span>
                                     </div>
                                     
-                                    <div class="submission-meta">
-                                        <div class="meta-item">
-                                            <div class="meta-label">Organization</div>
-                                            <div class="meta-value">${escapeHtml(submission.organization || 'Not specified')}</div>
-                                        </div>
-                                        <div class="meta-item">
-                                            <div class="meta-label">Contact</div>
-                                            <div class="meta-value">${escapeHtml(submission.contact_name || submission.contact_email || 'Not specified')}</div>
-                                        </div>
-                                        <div class="meta-item">
-                                            <div class="meta-label">Event Date</div>
-                                            <div class="meta-value">${escapeHtml(submission.event_date || 'Not specified')}</div>
-                                        </div>
-                                        <div class="meta-item">
-                                            <div class="meta-label">Submitted</div>
-                                            <div class="meta-value">${new Date(submission.submitted_at).toLocaleDateString()}</div>
-                                        </div>
-                                    </div>
-                                    
                                     <div class="submission-description">
                                         ${escapeHtml(submission.description)}
                                     </div>
                                     
-                                    ${submission.location ? `
-                                        <div class="meta-item">
-                                            <div class="meta-label">Location</div>
-                                            <div class="meta-value">${escapeHtml(submission.location)}</div>
-                                        </div>
-                                    ` : ''}
+                                    <p><strong>Organization:</strong> ${escapeHtml(submission.organization || 'Not specified')}</p>
+                                    <p><strong>Contact:</strong> ${escapeHtml(submission.contact_name || submission.contact_email || 'Not specified')}</p>
+                                    <p><strong>Submitted:</strong> ${new Date(submission.submitted_at).toLocaleDateString()}</p>
                                     
                                     ${submission.status === 'pending' ? `
                                         <div class="action-buttons">
@@ -494,7 +419,7 @@
                         <h3>Error Loading Submissions</h3>
                         <p>Could not connect to the backend server.</p>
                         <p>Make sure the Flask server is running on port 5000.</p>
-                        <p>Error: ${error.message}</p>
+                        <p>Error: ${escapeHtml(error.message)}</p>
                     </div>
                 `;
                 
@@ -513,14 +438,12 @@
                 return;
             }
             
-            const card = document.getElementById(`submission-${submissionId}`);
             const approveBtn = document.getElementById(`approve-${submissionId}`);
             const declineBtn = document.getElementById(`decline-${submissionId}`);
             
-            // Disable buttons and add processing state
+            // Disable buttons
             if (approveBtn) approveBtn.disabled = true;
             if (declineBtn) declineBtn.disabled = true;
-            if (card) card.classList.add('processing');
             
             try {
                 const response = await fetch(`http://localhost:5000/api/submissions/${submissionId}/approve`, {
@@ -549,7 +472,6 @@
                 // Reset buttons on error
                 if (approveBtn) approveBtn.disabled = false;
                 if (declineBtn) declineBtn.disabled = false;
-                if (card) card.classList.remove('processing');
             }
         }
         
@@ -559,14 +481,12 @@
                 return;
             }
             
-            const card = document.getElementById(`submission-${submissionId}`);
             const approveBtn = document.getElementById(`approve-${submissionId}`);
             const declineBtn = document.getElementById(`decline-${submissionId}`);
             
-            // Disable buttons and add processing state
+            // Disable buttons
             if (approveBtn) approveBtn.disabled = true;
             if (declineBtn) declineBtn.disabled = true;
-            if (card) card.classList.add('processing');
             
             try {
                 const response = await fetch(`http://localhost:5000/api/submissions/${submissionId}/decline`, {
@@ -595,15 +515,11 @@
                 // Reset buttons on error
                 if (approveBtn) approveBtn.disabled = false;
                 if (declineBtn) declineBtn.disabled = false;
-                if (card) card.classList.remove('processing');
             }
         }
         
         // Load submissions when page loads
         document.addEventListener('DOMContentLoaded', loadSubmissions);
-        
-        // Auto-refresh every 30 seconds
-        setInterval(loadSubmissions, 30000);
     </script>
 </body>
 </html>
