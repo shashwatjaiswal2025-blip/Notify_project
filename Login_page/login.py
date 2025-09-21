@@ -15,7 +15,7 @@ def check_login(login_id, password):
             password=DB_PASSWORD
         )
         cur = conn.cursor()
-        cur.execute("SELECT 1 FROM users WHERE username = %s AND password = %s;", (username, password))
+        cur.execute("SELECT 1 FROM users WHERE username = %s AND password = %s;", (login_id, password))
         result = cur.fetchone()
         cur.close()
         conn.close()

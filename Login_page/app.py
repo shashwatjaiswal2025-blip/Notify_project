@@ -1,10 +1,9 @@
+
 from flask import Flask, request, render_template
-import login
+from login import check_login
 
 app = Flask(__name__)
 
-user_input = []
-password = []
 
 @app.route('/')
 def index():
@@ -13,19 +12,18 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    username = request.form.get('username')
-    pwd = request.form.get('password')
+    username = request.form.get('username').strip()
+    pwd = request.form.get('password').strip()
 
-    if username:
-        user_input.append(username)
-    if pwd:
-        password.append(pwd)
-    
-    print('Usernames:', user_input)
-    print('Passwords:', password)
+    # Use check_login to verify credentials
+    if check_login(username, pwd):
+        result = "Authorised"
+    else:
+        result = "Invalid username or password."
 
-    # Render the template again, passing the latest password for display
-    return render_template('front_end.html', pwd=pwd)
+    # Optionally print or pass result to template
+    print(result)
+    return render_template('front_end.html', pwd=pwd, result=result)
 
 if __name__ == "__main__":
     app.run(debug=True)
