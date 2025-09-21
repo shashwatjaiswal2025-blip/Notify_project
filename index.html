@@ -474,7 +474,7 @@
         <li><a href="#latest" class="nav-link">Latest News</a></li>
         <li><a href="#events" class="nav-link">Events</a></li>
         <li><a href="#academics" class="nav-link">Academics</a></li>
-        <li><a href="submit.html" class="nav-link">Submit</a></li>
+        <li><a href="templates/submit.html" class="nav-link">Submit</a></li>
       </ul>
       <div class="menu-toggle" id="menuToggle">
         <span></span>
@@ -512,6 +512,7 @@
               <div class="calendar-day-header">Fri</div>
               <div class="calendar-day-header">Sat</div>
               
+              <div class="calendar-day other-month">31</div>
               <div class="calendar-day">1</div>
               <div class="calendar-day">2</div>
               <div class="calendar-day">3</div>
@@ -546,7 +547,6 @@
               <div class="calendar-day other-month">2</div>
               <div class="calendar-day other-month">3</div>
               <div class="calendar-day other-month">4</div>
-              <div class="calendar-day other-month">5</div>
             </div>
           </div>
 
@@ -647,7 +647,7 @@
       <!-- Footer -->
       <footer class="footer">
         <p>&copy; 2025 Notifly Campus Newsletter. All rights reserved.</p>
-        <p>Have news to share? <a href="submit.html" style="color: #fff; text-decoration: underline;">Submit your story</a></p>
+        <p>Have news to share? <a href="templates/submit.html" style="color: #fff; text-decoration: underline;">Submit your story</a></p>
       </footer>
     </div>
   </div>
@@ -660,6 +660,78 @@
     menuToggle.addEventListener('click', () => {
       navMenu.classList.toggle('active');
     });
+
+    // Dynamic Calendar Generation
+    function generateCalendar() {
+      const calendarGrid = document.querySelector('.calendar-grid');
+      const calendarTitle = document.querySelector('.calendar-title');
+      const calendarMonth = document.querySelector('.calendar-month');
+      
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth(); // September = 8 (0-indexed)
+      const currentDate = today.getDate();
+      
+      // First day of the month and last day of the month
+      const firstDay = new Date(currentYear, currentMonth, 1);
+      const lastDay = new Date(currentYear, currentMonth + 1, 0);
+      const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const daysInMonth = lastDay.getDate();
+      
+      // Previous month's last day
+      const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+      
+      // Month names
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      // Update title
+      calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      calendarMonth.textContent = `Today: ${monthNames[currentMonth]} ${currentDate}`;
+      
+      // Clear existing calendar (keep headers)
+      const headers = calendarGrid.querySelectorAll('.calendar-day-header');
+      calendarGrid.innerHTML = '';
+      headers.forEach(header => calendarGrid.appendChild(header));
+      
+      // Add previous month's trailing days
+      for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day other-month';
+        dayElement.textContent = prevMonthLastDay - i;
+        calendarGrid.appendChild(dayElement);
+      }
+      
+      // Add current month's days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        dayElement.textContent = day;
+        
+        // Highlight current day
+        if (day === currentDate) {
+          dayElement.classList.add('current');
+        }
+        
+        calendarGrid.appendChild(dayElement);
+      }
+      
+      // Add next month's leading days to fill the grid
+      const totalCells = calendarGrid.children.length - 7; // Subtract headers
+      const remainingCells = 42 - totalCells; // 6 weeks * 7 days = 42 cells
+      
+      for (let day = 1; day <= remainingCells; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day other-month';
+        dayElement.textContent = day;
+        calendarGrid.appendChild(dayElement);
+      }
+    }
+    
+    // Initialize calendar when page loads
+    document.addEventListener('DOMContentLoaded', generateCalendar);
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
