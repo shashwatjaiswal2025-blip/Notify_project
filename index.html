@@ -1,992 +1,498 @@
-<!DOCTYPE html><!DOCTYPE html>
-
-<html lang="en"><html lang="en">
-
-<head><head>
-
-    <meta charset="UTF-8">  <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Notifly - Campus Newsletter</title>  <title>Notifly - Campus Newsletter</title>
-
-    <style>  <style>
-
-        * {    * {
-
-            margin: 0;      margin: 0;
-
-            padding: 0;      padding: 0;
-
-            box-sizing: border-box;      box-sizing: border-box;
-
-        }    }
-
-
-
-        body {    body {
-
-            font-family: 'Arial', sans-serif;      font-family: 'Arial', sans-serif;
-
-            line-height: 1.6;      line-height: 1.6;
-
-            color: #333;      color: #333;
-
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-            min-height: 100vh;      min-height: 100vh;
-
-        }    }
-
-
-
-        /* Navigation Bar */    /* Navigation Bar */
-
-        .navbar {    .navbar {
-
-            background: rgba(255, 255, 255, 0.95);      background: rgba(255, 255, 255, 0.95);
-
-            backdrop-filter: blur(10px);      backdrop-filter: blur(10px);
-
-            padding: 1rem 0;      padding: 1rem 0;
-
-            position: fixed;      position: fixed;
-
-            top: 0;      top: 0;
-
-            left: 0;      left: 0;
-
-            right: 0;      right: 0;
-
-            z-index: 1000;      z-index: 1000;
-
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-
-        }    }
-
-
-
-        .nav-container {    .nav-container {
-
-            max-width: 1200px;      max-width: 1200px;
-
-            margin: 0 auto;      margin: 0 auto;
-
-            padding: 0 2rem;      padding: 0 2rem;
-
-            display: flex;      display: flex;
-
-            justify-content: space-between;      justify-content: space-between;
-
-            align-items: center;      align-items: center;
-
-        }    }
-
-
-
-        .logo {    .logo {
-
-            font-size: 1.8rem;      font-size: 1.8rem;
-
-            font-weight: bold;      font-weight: bold;
-
-            color: #667eea;      color: #667eea;
-
-            text-decoration: none;      text-decoration: none;
-
-        }    }
-
-
-
-        .nav-menu {    .nav-menu {
-
-            display: flex;      display: flex;
-
-            list-style: none;      list-style: none;
-
-            gap: 2rem;      gap: 2rem;
-
-        }    }
-
-
-
-        .nav-link {    .nav-link {
-
-            text-decoration: none;      text-decoration: none;
-
-            color: #333;      color: #333;
-
-            font-weight: 500;      font-weight: 500;
-
-            transition: color 0.3s ease;      transition: color 0.3s ease;
-
-            position: relative;      position: relative;
-
-        }    }
-
-
-
-        .nav-link:hover {    .nav-link:hover {
-
-            color: #667eea;      color: #667eea;
-
-        }    }
-
-
-
-        .nav-link.active {    .nav-link::after {
-
-            color: #667eea;      content: '';
-
-        }      position: absolute;
-
-      bottom: -5px;
-
-        .nav-link::after {      left: 0;
-
-            content: '';      width: 0;
-
-            position: absolute;      height: 2px;
-
-            bottom: -5px;      background: #667eea;
-
-            left: 0;      transition: width 0.3s ease;
-
-            width: 0;    }
-
-            height: 2px;
-
-            background: #667eea;    .nav-link:hover::after {
-
-            transition: width 0.3s ease;      width: 100%;
-
-        }    }
-
-
-
-        .nav-link:hover::after,    /* Mobile Menu Toggle */
-
-        .nav-link.active::after {    .menu-toggle {
-
-            width: 100%;      display: none;
-
-        }      flex-direction: column;
-
-      cursor: pointer;
-
-        /* Main Content */    }
-
-        .main-content {
-
-            margin-top: 80px;    .menu-toggle span {
-
-            padding: 2rem 0;      width: 25px;
-
-            min-height: calc(100vh - 80px);      height: 3px;
-
-        }      background: #333;
-
-      margin: 3px 0;
-
-        .container {      transition: 0.3s;
-
-            max-width: 1200px;    }
-
-            margin: 0 auto;
-
-            padding: 0 2rem;    /* Main Content */
-
-        }    .main-content {
-
-      margin-top: 80px;
-
-        /* Hero Section */      padding: 2rem 0;
-
-        .hero {    }
-
-            text-align: center;
-
-            background: rgba(255, 255, 255, 0.1);    .container {
-
-            backdrop-filter: blur(10px);      max-width: 100%;
-
-            border-radius: 20px;      margin: 0 auto;
-
-            padding: 3rem 2rem;      padding: 0 2rem;
-
-            margin-bottom: 3rem;    }
-
-            color: white;
-
-        }    /* Layout Grid */
-
-    .page-layout {
-
-        .hero h1 {      display: grid;
-
-            font-size: 3rem;      grid-template-columns: 350px 1fr;
-
-            margin-bottom: 1rem;      gap: 2rem;
-
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);      margin-bottom: 2rem;
-
-        }    }
-
-
-
-        .hero p {    .sidebar {
-
-            font-size: 1.2rem;      display: flex;
-
-            opacity: 0.9;      flex-direction: column;
-
-            margin-bottom: 2rem;      gap: 1.5rem;
-
-        }    }
-
-
-
-        .cta-button {    /* Calendar Widget */
-
-            background: linear-gradient(135deg, #667eea, #764ba2);    .calendar-widget {
-
-            color: white;      background: rgba(255, 255, 255, 0.95);
-
-            text-decoration: none;      backdrop-filter: blur(10px);
-
-            padding: 1rem 2rem;      border-radius: 15px;
-
-            border-radius: 10px;      padding: 1.5rem;
-
-            font-weight: 600;      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-
-            display: inline-block;      overflow: hidden;
-
-            transition: transform 0.3s ease;    }
-
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-
-        }    .calendar-header {
-
-      text-align: center;
-
-        .cta-button:hover {      margin-bottom: 1.5rem;
-
-            transform: translateY(-3px);    }
-
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-
-        }    .calendar-title {
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifly - Campus Newsletter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
       color: #667eea;
+      text-decoration: none;
+    }
 
-        /* Content Grid */      font-size: 1.4rem;
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
 
-        .content-grid {      font-weight: bold;
+    .nav-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      position: relative;
+    }
 
-            display: grid;      margin-bottom: 0.5rem;
+    .nav-link:hover {
+      color: #667eea;
+    }
 
-            grid-template-columns: 1fr 300px;    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #667eea;
+      transition: width 0.3s ease;
+    }
 
-            gap: 2rem;
+    .nav-link:hover::after {
+      width: 100%;
+    }
 
-            margin-top: 3rem;    .calendar-month {
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
 
-        }      color: #333;
+    .menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: #333;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
 
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      padding: 2rem 0;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Layout Grid */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Calendar Widget */
+    .calendar-widget {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .calendar-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-title {
+      color: #667eea;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .calendar-month {
+      color: #333;
       font-size: 1rem;
+      font-weight: 500;
+    }
 
-        .news-section {      font-weight: 500;
-
-            background: rgba(255, 255, 255, 0.95);    }
-
-            backdrop-filter: blur(10px);
-
-            border-radius: 20px;    .calendar-grid {
-
-            padding: 2rem;      display: grid;
-
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);      grid-template-columns: repeat(7, 1fr);
-
-        }      gap: 2px;
-
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
       margin-top: 1.5rem;
-
-        .sidebar {      padding: 0.3rem;
-
-            display: flex;      background: rgba(255, 255, 255, 0.5);
-
-            flex-direction: column;      border-radius: 10px;
-
-            gap: 2rem;    }
-
-        }
+      padding: 0.3rem;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+    }
 
     .calendar-day-header {
-
-        .calendar-widget,      text-align: center;
-
-        .quick-updates {      font-size: 0.8rem;
-
-            background: rgba(255, 255, 255, 0.95);      font-weight: bold;
-
-            backdrop-filter: blur(10px);      color: #666;
-
-            border-radius: 20px;      padding: 0.4rem 0.2rem;
-
-            padding: 1.5rem;      background: #f8f9fa;
-
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);      border-radius: 4px;
-
-        }      margin-bottom: 0.2rem;
-
-    }
-
-        .section-title {
-
-            font-size: 1.5rem;    .calendar-day {
-
-            color: #667eea;      text-align: center;
-
-            margin-bottom: 1rem;      padding: 0.4rem 0.2rem;
-
-            padding-bottom: 0.5rem;      font-size: 0.9rem;
-
-            border-bottom: 2px solid #667eea;      border-radius: 4px;
-
-        }      cursor: pointer;
-
-      transition: all 0.2s ease;
-
-        /* Calendar Styles */      min-height: 30px;
-
-        .calendar {      display: flex;
-
-            text-align: center;      align-items: center;
-
-        }      justify-content: center;
-
-      font-weight: 500;
-
-        .calendar-header {      background: rgba(255, 255, 255, 0.8);
-
-            display: flex;      margin: 1px;
-
-            justify-content: space-between;    }
-
-            align-items: center;
-
-            margin-bottom: 1rem;    .calendar-day:hover {
-
-        }      background: #e3f2fd !important;
-
-      transform: scale(1.02);
-
-        .calendar-grid {      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
-
-            display: grid;    }
-
-            grid-template-columns: repeat(7, 1fr);
-
-            gap: 5px;    .calendar-day.current {
-
-            font-size: 0.9rem;      background: #667eea !important;
-
-        }      color: white;
-
+      text-align: center;
+      font-size: 0.8rem;
       font-weight: bold;
-
-        .calendar-day {      box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
-
-            padding: 8px;    }
-
-            text-align: center;
-
-            border-radius: 5px;    .calendar-day.other-month {
-
-            transition: background 0.3s ease;      color: #ccc;
-
-        }      background: rgba(255, 255, 255, 0.4) !important;
-
+      color: #666;
+      padding: 0.4rem 0.2rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      margin-bottom: 0.2rem;
     }
 
-        .calendar-day.header {
+    .calendar-day {
+      text-align: center;
+      padding: 0.4rem 0.2rem;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.8);
+      margin: 1px;
+    }
 
-            font-weight: bold;    /* Quick Updates Sidebar */
+    .calendar-day:hover {
+      background: #e3f2fd !important;
+      transform: scale(1.02);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
 
-            color: #667eea;    .quick-updates-sidebar {
-
-        }      background: linear-gradient(135deg, #667eea, #764ba2);
-
+    .calendar-day.current {
+      background: #667eea !important;
       color: white;
+      font-weight: bold;
+      box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
+    }
 
-        .calendar-day.today {      border-radius: 15px;
+    .calendar-day.other-month {
+      color: #ccc;
+      background: rgba(255, 255, 255, 0.4) !important;
+    }
 
-            background: #667eea;      padding: 2rem;
-
-            color: white;    }
-
-        }
+    /* Quick Updates Sidebar */
+    .quick-updates-sidebar {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 15px;
+      padding: 2rem;
+    }
 
     .quick-updates-sidebar .section-title {
-
-        .calendar-day:not(.header):not(.today):hover {      color: white;
-
-            background: #f0f2ff;      border-bottom-color: white;
-
-        }      font-size: 1.4rem;
-
+      color: white;
+      border-bottom-color: white;
+      font-size: 1.4rem;
       margin-bottom: 1.5rem;
-
-        /* News Article Styles */    }
-
-        .news-article {
-
-            border-bottom: 1px solid #eee;    .update-item-sidebar {
-
-            padding: 1.5rem 0;      background: rgba(255, 255, 255, 0.15);
-
-            margin-bottom: 1.5rem;      border-radius: 10px;
-
-        }      padding: 1rem;
-
-      margin-bottom: 1rem;
-
-        .news-article:last-child {      backdrop-filter: blur(5px);
-
-            border-bottom: none;      font-size: 0.95rem;
-
-            margin-bottom: 0;      line-height: 1.4;
-
-        }    }
-
-
-
-        .news-category {    .update-item-sidebar:last-child {
-
-            background: #667eea;      margin-bottom: 0;
-
-            color: white;    }
-
-            padding: 0.3rem 0.8rem;
-
-            border-radius: 15px;    /* Header Section */
-
-            font-size: 0.8rem;    .header-section {
-
-            font-weight: 600;      text-align: center;
-
-            text-transform: uppercase;      background: rgba(255, 255, 255, 0.1);
-
-            display: inline-block;      backdrop-filter: blur(10px);
-
-            margin-bottom: 0.5rem;      border-radius: 20px;
-
-        }      padding: 3rem 2rem;
-
-      margin-bottom: 3rem;
-
-        .news-title {      color: white;
-
-            font-size: 1.3rem;    }
-
-            font-weight: 600;
-
-            margin-bottom: 0.5rem;    .header-section h1 {
-
-            color: #333;      font-size: 3rem;
-
-        }      margin-bottom: 1rem;
-
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-
-        .news-meta {    }
-
-            color: #666;
-
-            font-size: 0.9rem;    .header-section p {
-
-            margin-bottom: 1rem;      font-size: 1.2rem;
-
-        }      opacity: 0.9;
-
     }
 
-        .news-excerpt {
+    .update-item-sidebar {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(5px);
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
 
-            color: #555;    /* Newsletter Content */
+    .update-item-sidebar:last-child {
+      margin-bottom: 0;
+    }
 
-            line-height: 1.6;    .newsletter-content {
-
-        }      background: white;
-
+    /* Header Section */
+    .header-section {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
       border-radius: 20px;
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+      color: white;
+    }
 
-        /* Quick Updates */      padding: 3rem;
+    .header-section h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
 
-        .update-item {      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    .header-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
 
-            padding: 1rem 0;      margin-bottom: 2rem;
-
-            border-bottom: 1px solid #eee;    }
-
-        }
+    /* Newsletter Content */
+    .newsletter-content {
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
 
     .section-title {
-
-        .update-item:last-child {      font-size: 2rem;
-
-            border-bottom: none;      color: #667eea;
-
-        }      margin-bottom: 2rem;
-
+      font-size: 2rem;
+      color: #667eea;
+      margin-bottom: 2rem;
       border-bottom: 3px solid #667eea;
+      padding-bottom: 0.5rem;
+    }
 
-        .update-title {      padding-bottom: 0.5rem;
-
-            font-weight: 600;    }
-
-            color: #333;
-
-            margin-bottom: 0.3rem;    .article-grid {
-
-        }      display: grid;
-
+    .article-grid {
+      display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-
-        .update-time {      gap: 2rem;
-
-            color: #666;      margin-bottom: 3rem;
-
-            font-size: 0.8rem;    }
-
-        }
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
 
     .article-card {
-
-        /* Responsive Design */      background: #f8f9fa;
-
-        @media (max-width: 768px) {      border-radius: 15px;
-
-            .content-grid {      padding: 2rem;
-
-                grid-template-columns: 1fr;      border-left: 5px solid #667eea;
-
-            }      transition: transform 0.3s ease, box-shadow 0.3s ease;
-
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 2rem;
+      border-left: 5px solid #667eea;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-            .sidebar {
-
-                order: -1;    .article-card:hover {
-
-            }      transform: translateY(-5px);
-
+    .article-card:hover {
+      transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-
-            .hero h1 {    }
-
-                font-size: 2rem;
-
-            }    .article-title {
-
-      font-size: 1.3rem;
-
-            .container {      color: #333;
-
-                padding: 0 1rem;      margin-bottom: 1rem;
-
-            }    }
-
-        }
-
-    </style>    .article-meta {
-
-</head>      color: #666;
-
-<body>      font-size: 0.9rem;
-
-    <!-- Navigation Bar -->      margin-bottom: 1rem;
-
-    <nav class="navbar">    }
-
-        <div class="nav-container">
-
-            <a href="index.html" class="logo">Notifly</a>    .article-excerpt {
-
-            <ul class="nav-menu">      color: #555;
-
-                <li><a href="index.html" class="nav-link active">Home</a></li>      line-height: 1.6;
-
-                <li><a href="#latest" class="nav-link">Latest News</a></li>    }
-
-                <li><a href="#events" class="nav-link">Events</a></li>
-
-                <li><a href="#academics" class="nav-link">Academics</a></li>    .read-more {
-
-                <li><a href="templates/submit.html" class="nav-link">Submit</a></li>      color: #667eea;
-
-            </ul>      text-decoration: none;
-
-        </div>      font-weight: 500;
-
-    </nav>      margin-top: 1rem;
-
-      display: inline-block;
-
-    <!-- Main Content -->    }
-
-    <div class="main-content">
-
-        <div class="container">    .read-more:hover {
-
-            <!-- Hero Section -->      text-decoration: underline;
-
-            <div class="hero">    }
-
-                <h1>Welcome to Notifly</h1>
-
-                <p>Your campus newsletter hub for news, events, and announcements</p>    /* Quick Updates Section */
-
-                <a href="templates/submit.html" class="cta-button">Submit News</a>    .quick-updates {
-
-            </div>      background: linear-gradient(135deg, #667eea, #764ba2);
-
-      color: white;
-
-            <!-- Content Grid -->      border-radius: 15px;
-
-            <div class="content-grid">      padding: 2rem;
-
-                <!-- News Section -->      margin-bottom: 3rem;
-
-                <div class="news-section" id="latest">    }
-
-                    <h2 class="section-title">Latest News</h2>
-
-                        .update-item {
-
-                    <article class="news-article">      background: rgba(255, 255, 255, 0.1);
-
-                        <span class="news-category">Event</span>      border-radius: 10px;
-
-                        <h3 class="news-title">Annual Tech Fair 2025</h3>      padding: 1rem;
-
-                        <div class="news-meta">Posted on September 20, 2025 | Engineering Department</div>      margin-bottom: 1rem;
-
-                        <p class="news-excerpt">Join us for the biggest tech showcase of the year! Students and faculty will present innovative projects, startups will demo their latest products, and industry leaders will share insights on emerging technologies.</p>      backdrop-filter: blur(5px);
-
-                    </article>    }
-
-
-
-                    <article class="news-article">    .update-item:last-child {
-
-                        <span class="news-category">Academic</span>      margin-bottom: 0;
-
-                        <h3 class="news-title">New Course Offerings for Spring 2026</h3>    }
-
-                        <div class="news-meta">Posted on September 19, 2025 | Academic Affairs</div>
-
-                        <p class="news-excerpt">Exciting new courses are being offered next semester including Advanced AI Ethics, Sustainable Engineering Design, and Digital Marketing Analytics. Registration opens October 1st.</p>    /* Footer */
-
-                    </article>    .footer {
-
-      background: rgba(255, 255, 255, 0.1);
-
-                    <article class="news-article">      backdrop-filter: blur(10px);
-
-                        <span class="news-category">Club</span>      color: white;
-
-                        <h3 class="news-title">Robotics Club Wins Regional Championship</h3>      text-align: center;
-
-                        <div class="news-meta">Posted on September 18, 2025 | Robotics Club</div>      padding: 2rem;
-
-                        <p class="news-excerpt">Our robotics team secured first place at the Regional STEM Competition with their autonomous delivery robot prototype. The team will advance to nationals in December.</p>      border-radius: 20px;
-
-                    </article>      margin-top: 2rem;
-
     }
 
-                    <article class="news-article">
+    .article-title {
+      font-size: 1.3rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
 
-                        <span class="news-category">Campus</span>    /* Responsive Design */
+    .article-meta {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
 
-                        <h3 class="news-title">New Library Study Pods Now Available</h3>    @media (max-width: 1200px) {
+    .article-excerpt {
+      color: #555;
+      line-height: 1.6;
+    }
 
-                        <div class="news-meta">Posted on September 17, 2025 | Library Services</div>      .page-layout {
+    .read-more {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 1rem;
+      display: inline-block;
+    }
 
-                        <p class="news-excerpt">The library has installed 12 new soundproof study pods on the third floor. These pods feature wireless charging, adjustable lighting, and can be reserved online for up to 4 hours.</p>        grid-template-columns: 320px 1fr;
+    .read-more:hover {
+      text-decoration: underline;
+    }
 
-                    </article>      }
+    /* Quick Updates Section */
+    .quick-updates {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
 
-                </div>      
+    .update-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(5px);
+    }
 
+    .update-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    .footer {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      border-radius: 20px;
+      margin-top: 2rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .page-layout {
+        grid-template-columns: 320px 1fr;
+      }
+      
       .calendar-widget {
+        padding: 1.2rem;
+      }
+    }
 
-                <!-- Sidebar -->        padding: 1.2rem;
-
-                <div class="sidebar">      }
-
-                    <!-- Calendar Widget -->    }
-
-                    <div class="calendar-widget">
-
-                        <h3 class="section-title">Calendar</h3>    @media (max-width: 968px) {
-
-                        <div class="calendar">      .page-layout {
-
-                            <div class="calendar-header">        grid-template-columns: 1fr;
-
-                                <button id="prevMonth">&lt;</button>        gap: 1.5rem;
-
-                                <span id="currentMonth">September 2025</span>      }
-
-                                <button id="nextMonth">&gt;</button>
-
-                            </div>      .sidebar {
-
-                            <div class="calendar-grid" id="calendarGrid">        order: 2;
-
-                                <!-- Calendar will be generated by JavaScript -->      }
-
-                            </div>
-
-                        </div>      .main-content-area {
-
-                    </div>        order: 1;
-
+    @media (max-width: 968px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
       }
 
-                    <!-- Quick Updates -->    }
+      .sidebar {
+        order: 2;
+      }
 
-                    <div class="quick-updates">
+      .main-content-area {
+        order: 1;
+      }
+    }
 
-                        <h3 class="section-title">Quick Updates</h3>    @media (max-width: 768px) {
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
 
-                              .menu-toggle {
+      .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 80px;
+        flex-direction: column;
+        background: white;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        padding: 2rem 0;
+      }
 
-                        <div class="update-item">        display: flex;
+      .nav-menu.active {
+        left: 0;
+      }
 
-                            <div class="update-title">Career Fair Registration Open</div>      }
-
-                            <div class="update-time">2 hours ago</div>
-
-                        </div>      .nav-menu {
-
-                                position: fixed;
-
-                        <div class="update-item">        left: -100%;
-
-                            <div class="update-title">Dining Hall Menu Updated</div>        top: 80px;
-
-                            <div class="update-time">4 hours ago</div>        flex-direction: column;
-
-                        </div>        background: white;
-
-                                width: 100%;
-
-                        <div class="update-item">        text-align: center;
-
-                            <div class="update-title">Parking Lot B Maintenance</div>        transition: 0.3s;
-
-                            <div class="update-time">1 day ago</div>        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-
-                        </div>        padding: 2rem 0;
-
-                              }
-
-                        <div class="update-item">
-
-                            <div class="update-title">Student ID Photo Sessions</div>      .nav-menu.active {
-
-                            <div class="update-time">2 days ago</div>        left: 0;
-
-                        </div>      }
-
-                    </div>
-
-                </div>      .container {
-
-            </div>        padding: 0 1rem;
-
-        </div>      }
-
-    </div>
+      .container {
+        padding: 0 1rem;
+      }
 
       .calendar-widget {
-
-    <script>        padding: 1.5rem;
-
-        // Calendar functionality      }
-
-        const calendarGrid = document.getElementById('calendarGrid');
-
-        const currentMonthSpan = document.getElementById('currentMonth');      .calendar-title {
-
-        const prevMonthBtn = document.getElementById('prevMonth');        font-size: 1.2rem;
-
-        const nextMonthBtn = document.getElementById('nextMonth');      }
-
-
-
-        let currentDate = new Date();      .calendar-day {
-
-                padding: 0.6rem;
-
-        function generateCalendar(year, month) {        font-size: 0.9rem;
-
-            const firstDay = new Date(year, month, 1);        min-height: 35px;
-
-            const lastDay = new Date(year, month + 1, 0);      }
-
-            const today = new Date();
-
-                  .calendar-day-header {
-
-            const monthNames = [        padding: 0.5rem;
-
-                'January', 'February', 'March', 'April', 'May', 'June',        font-size: 0.8rem;
-
-                'July', 'August', 'September', 'October', 'November', 'December'      }
-
-            ];
-
-                  .quick-updates-sidebar {
-
-            currentMonthSpan.textContent = `${monthNames[month]} ${year}`;        padding: 1.5rem;
-
-                  }
-
-            // Clear previous calendar
-
-            calendarGrid.innerHTML = '';      .header-section h1 {
-
-                    font-size: 2rem;
-
-            // Add day headers      }
-
-            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-            dayHeaders.forEach(day => {      .newsletter-content {
-
-                const dayElement = document.createElement('div');        padding: 2rem;
-
-                dayElement.className = 'calendar-day header';      }
-
-                dayElement.textContent = day;
-
-                calendarGrid.appendChild(dayElement);      .article-grid {
-
-            });        grid-template-columns: 1fr;
-
-                  }
-
-            // Add empty cells for days before the first day of the month    }
-
-            const startDay = firstDay.getDay();
-
-            for (let i = 0; i < startDay; i++) {    @media (max-width: 480px) {
-
-                const emptyDay = document.createElement('div');      .calendar-widget {
-
-                emptyDay.className = 'calendar-day';        padding: 1rem;
-
-                calendarGrid.appendChild(emptyDay);      }
-
-            }
-
-                  .calendar-day {
-
-            // Add days of the month        padding: 0.4rem;
-
-            for (let day = 1; day <= lastDay.getDate(); day++) {        font-size: 0.8rem;
-
-                const dayElement = document.createElement('div');        min-height: 30px;
-
-                dayElement.className = 'calendar-day';      }
-
-                dayElement.textContent = day;
-
-                      .calendar-day-header {
-
-                // Highlight today        padding: 0.4rem;
-
-                if (year === today.getFullYear() &&         font-size: 0.7rem;
-
-                    month === today.getMonth() &&       }
-
-                    day === today.getDate()) {
-
-                    dayElement.classList.add('today');      .quick-updates-sidebar {
-
-                }        padding: 1rem;
-
-                      }
-
-                calendarGrid.appendChild(dayElement);    }
-
-            }  </style>
-
-        }</head>
-
-        <body>
-
-        prevMonthBtn.addEventListener('click', () => {  <!-- Navigation Bar -->
-
-            currentDate.setMonth(currentDate.getMonth() - 1);  <nav class="navbar">
-
-            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());    <div class="nav-container">
-
-        });      <a href="#" class="logo">Notifly</a>
-
-              <ul class="nav-menu" id="navMenu">
-
-        nextMonthBtn.addEventListener('click', () => {        <li><a href="#home" class="nav-link">Home</a></li>
-
-            currentDate.setMonth(currentDate.getMonth() + 1);        <li><a href="#latest" class="nav-link">Latest News</a></li>
-
-            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());        <li><a href="#events" class="nav-link">Events</a></li>
-
-        });        <li><a href="#academics" class="nav-link">Academics</a></li>
-
-                <li><a href="submit.html" class="nav-link">Submit</a></li>
-
-        // Initialize calendar      </ul>
-
-        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());      <div class="menu-toggle" id="menuToggle">
-
+        padding: 1.5rem;
+      }
+
+      .calendar-title {
+        font-size: 1.2rem;
+      }
+
+      .calendar-day {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+        min-height: 35px;
+      }
+
+      .calendar-day-header {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      .quick-updates-sidebar {
+        padding: 1.5rem;
+      }
+
+      .header-section h1 {
+        font-size: 2rem;
+      }
+
+      .newsletter-content {
+        padding: 2rem;
+      }
+
+      .article-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .calendar-widget {
+        padding: 1rem;
+      }
+
+      .calendar-day {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+        min-height: 30px;
+      }
+
+      .calendar-day-header {
+        padding: 0.4rem;
+        font-size: 0.7rem;
+      }
+
+      .quick-updates-sidebar {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">Notifly</a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#latest" class="nav-link">Latest News</a></li>
+        <li><a href="#events" class="nav-link">Events</a></li>
+        <li><a href="#academics" class="nav-link">Academics</a></li>
+        <li><a href="submit.html" class="nav-link">Submit</a></li>
+      </ul>
+      <div class="menu-toggle" id="menuToggle">
         <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
 
-        // Smooth scrolling for anchor links        <span></span>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Header Section -->
+      <section class="header-section" id="home">
+        <h1>Campus Newsletter</h1>
+        <p>Stay updated with the latest campus news, events, and announcements</p>
+      </section>
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {        <span></span>
-
-            anchor.addEventListener('click', function (e) {      </div>
-
-                e.preventDefault();    </div>
-
-                const target = document.querySelector(this.getAttribute('href'));  </nav>
-
-                if (target) {
-
-                    target.scrollIntoView({  <!-- Main Content -->
-
-                        behavior: 'smooth'  <div class="main-content">
-
-                    });    <div class="container">
-
-                }      <!-- Header Section -->
-
-            });      <section class="header-section" id="home">
-
-        });        <h1>Campus Newsletter</h1>
-
-    </script>        <p>Stay updated with the latest campus news, events, and announcements</p>
-
-</body>      </section>
-
-</html>
       <!-- Page Layout with Sidebar -->
       <div class="page-layout">
         <!-- Left Sidebar -->
