@@ -64,9 +64,6 @@ def fetch_gmail():
                     body = msg.get_payload(decode=True).decode(charset, errors="ignore")
                 received_date = msg.get('Date')
                 emails.append((subject, sender, body, received_date))
-        print(i)
-        if i>=10:
-            break
 
     mail.logout()
     print(f"Fetched {len(emails)} emails from Gmail.")
