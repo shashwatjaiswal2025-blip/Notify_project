@@ -3,9 +3,20 @@ import requests
 import json
 import time
 from typing import Optional
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from typing import Optional, Any
+import uvicorn  
 
+app = FastAPI(title="POST Request Handler", version="1.0.0")
 
-url = "http://10.91.86.87:8081"
+class RequestData(BaseModel):
+    subject: str
+    body: str
+    priority: int
+    tags: list[str]
+
+url = "http://10.91.86.87:8084"
 
 def ping_server(url, timeout=5):
     """
@@ -50,6 +61,32 @@ def connect_to_database():
     except (Exception, psycopg2.Error) as error:
         print(f"Error connecting to PostgreSQL database: {error}")
         return None
+def init_responses_table(connection):
+    """Initialize the responses table with foreign key relationship to emails table"""
+    try:
+        cursor = connection.cursor()
+        
+        # Create responses table with foreign key reference to emails table
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS responses (
+            id INTEGER PRIMARY KEY,
+            new_subject TEXT,
+            new_body TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id) REFERENCES emails (id) ON DELETE CASCADE
+        );
+        """
+        
+        cursor.execute(create_table_query)
+        connection.commit()
+        cursor.close()
+        print("✅ Responses table initialized successfully with foreign key relationship")
+        return True
+    
+    except (Exception, psycopg2.Error) as error:
+        print(f"❌ Error creating responses table: {error}")
+        return False
+    
 
 def fetch_email_data(connection):
     """Fetch all email records from the database"""
@@ -84,6 +121,39 @@ def fetch_email_data(connection):
     except (Exception, psycopg2.Error) as error:
         print(f"Error fetching data from database: {error}")
         return []
+    
+
+def store_response_data(connection, email_id, response_data):
+    """Store response data in the responses table"""
+    try:
+        cursor = connection.cursor()
+        
+        # Extract new_subject and new_body from response data
+        new_subject = response_data.get('new_subject', '') if isinstance(response_data, dict) else ''
+        new_body = response_data.get('new_body', '') if isinstance(response_data, dict) else ''
+        
+        # Insert or update response data
+        insert_query = """
+        INSERT INTO responses (idd, new_subject, new_body)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (idd) 
+        DO UPDATE SET 
+            new_subject = EXCLUDED.new_subject,
+            new_body = EXCLUDED.new_body,
+            created_at = CURRENT_TIMESTAMP
+        """
+        
+        cursor.execute(insert_query, (email_id, new_subject, new_body))
+        connection.commit()
+        cursor.close()
+        
+        print(f"✅ Successfully stored response data for email ID {email_id}")
+        return True
+        
+    except (Exception, psycopg2.Error) as error:
+        print(f"❌ Error storing response data for email ID {email_id}: {error}")
+        return False
+    
 
 def make_post_request(email_record, url_endpoint):
     """Make POST request with email data"""
@@ -113,10 +183,10 @@ def make_post_request(email_record, url_endpoint):
         # Check response status
         if response.status_code == 200 or response.status_code == 201:
             print(f"✅ Successfully posted email ID {email_record['id']} - Status: {response.status_code}")
-            return True
+            return {'success': True, 'response': response}
         else:
             print(f"❌ Failed to post email ID {email_record['id']} - Status: {response.status_code}, Response: {response.text}")
-            return False
+            return {'success': False, 'response': response}
             
     except requests.exceptions.RequestException as e:
         print(f"❌ Request error for email ID {email_record['id']}: {e}")
@@ -135,10 +205,15 @@ def process_emails_with_rate_limit(email_data, url_endpoint, delay=1):
         print(f"\n📧 Processing email {i}/{len(email_data)} (ID: {email['id']})")
         print(f"Subject: {email['subject'][:50]}..." if len(email['subject']) > 50 else f"Subject: {email['subject']}")
         
-        success = make_post_request(email, url_endpoint)
-        print(success)
-        if success:
+        result = make_post_request(email, url_endpoint)
+
+        if result['success']:
             success_count += 1
+            # Now you have access to the response object
+            store_response_data(connection, email['id'], result['response']) 
+            
+            # Print response details at line 150 or wherever needed
+            print(f"POST Response Text: {response_obj.text}")
         else:
             failure_count += 1
         
