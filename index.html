@@ -11,12 +11,44 @@
             box-sizing: border-box;
         }
 
+        /* Dark Mode Variables */
+        :root {
+            --bg-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4397 100%);
+            --bg-card: rgba(255, 255, 255, 0.98);
+            --bg-card-secondary: rgba(255, 255, 255, 0.95);
+            --bg-sidebar: rgba(255, 255, 255, 0.98);
+            --bg-navbar: rgba(255, 255, 255, 0.96);
+            --text-primary: #333;
+            --text-secondary: #555;
+            --text-meta: #666;
+            --border-color: rgba(255, 255, 255, 0.8);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-heavy: rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: linear-gradient(135deg, #1a1f36 0%, #2d1b3d 100%);
+            --bg-card: rgba(30, 35, 50, 0.95);
+            --bg-card-secondary: rgba(25, 30, 45, 0.92);
+            --bg-sidebar: rgba(30, 35, 50, 0.95);
+            --bg-navbar: rgba(25, 30, 45, 0.96);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --text-meta: #a0aec0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #5a6fd8 0%, #6b4397 100%);
+            background: var(--bg-primary);
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            transition: all 0.3s ease;
         }
 
         /* Global Animated Background */
@@ -127,10 +159,17 @@
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 3rem;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px var(--shadow-heavy);
             border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
             min-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .login-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
         }
 
         .login-container h2 {
@@ -199,14 +238,15 @@
 
         /* Navigation */
         .navbar {
-            background: rgba(255, 255, 255, 0.96);
+            background: var(--bg-navbar);
             backdrop-filter: blur(20px);
             padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 2px 20px var(--shadow-light);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .nav-container {
@@ -226,7 +266,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: #333; /* Fallback color for browsers that don't support background-clip */
+            color: var(--text-primary);
             text-decoration: none;
             transition: all 0.4s ease;
             position: relative;
@@ -235,6 +275,15 @@
             animation: logoGradientShift 4s ease-in-out infinite;
             display: flex;
             align-items: center;
+        }
+
+        [data-theme="dark"] .logo {
+            background: linear-gradient(135deg, #8b9eff 0%, #9d7bff 50%, #ff9ef7 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 15px rgba(139, 158, 255, 0.4);
         }
 
         .logo::before {
@@ -315,7 +364,7 @@
 
         .nav-menu a {
             text-decoration: none;
-            color: #333;
+            color: var(--text-primary);
             font-weight: 500;
             padding: 0.5rem 1rem;
             border-radius: 25px;
@@ -347,31 +396,32 @@
         /* Header Section */
         .header-section {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-card);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 3rem 2rem;
             margin-bottom: 3rem;
-            color: #333;
+            color: var(--text-primary);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .header-section h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            color: #333;
+            color: var(--text-primary);
             font-weight: 700;
         }
 
         .header-section p {
             font-size: 1.2rem;
-            color: #555;
+            color: var(--text-secondary);
         }
 
-        /* Container */
+        /* Container with Dark Mode */
         .container {
             max-width: 100%;
             margin: 0 auto;
@@ -379,10 +429,15 @@
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
             margin-bottom: 2rem;
-            color: #333;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .container {
+            background: rgba(0, 0, 0, 0.2);
         }
 
         /* Page Layout */
@@ -395,21 +450,22 @@
             padding: 2rem;
         }
 
-        /* Newsletter Content */
+        /* Newsletter Content with Dark Mode */
         .newsletter-content {
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--bg-card);
             backdrop-filter: blur(15px);
             border-radius: 20px;
             padding: 3rem;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 50px var(--shadow-medium);
+            border: 1px solid var(--border-color);
             margin-bottom: 2rem;
-            color: #333;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
         }
 
         .section-title {
             font-size: 2rem;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 2rem;
             border-bottom: 3px solid #667eea;
             padding-bottom: 0.5rem;
@@ -424,39 +480,40 @@
             margin-top: 2rem;
         }
 
+        /* Article Cards with Dark Mode */
         .article-card {
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--bg-card-secondary);
             backdrop-filter: blur(15px);
             border-radius: 15px;
             padding: 2rem;
             border-left: 5px solid rgba(102, 126, 234, 0.8);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .article-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px var(--shadow-heavy);
         }
 
         .article-title {
             font-size: 1.3rem;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 1rem;
             font-weight: 600;
         }
 
         .article-meta {
-            color: #666;
+            color: var(--text-meta);
             font-size: 0.9rem;
             margin-bottom: 1rem;
             font-weight: 500;
         }
 
         .article-excerpt {
-            color: #444;
+            color: var(--text-secondary);
             line-height: 1.6;
             font-size: 1rem;
             margin-bottom: 1rem;
@@ -473,33 +530,31 @@
             color: #5a67d8;
         }
 
-        /* Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        /* Calendar Widget */
-        .calendar-widget {
-            background: rgba(255, 255, 255, 0.98);
+        /* Sidebar with Dark Mode */
+        .calendar-widget, .quick-updates-sidebar {
+            background: var(--bg-sidebar);
             backdrop-filter: blur(20px);
             border-radius: 15px;
             padding: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            color: #333;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .quick-updates-sidebar {
+            padding: 2rem;
         }
 
         .calendar-title {
-            color: #2c3e50;
+            color: var(--text-primary);
             font-size: 1.4rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
 
         .calendar-month {
-            color: #555;
+            color: var(--text-secondary);
             font-size: 1rem;
             font-weight: 500;
             margin-bottom: 1rem;
@@ -515,7 +570,7 @@
         .calendar-day-header {
             padding: 0.5rem;
             font-weight: 600;
-            color: #666;
+            color: var(--text-meta);
             font-size: 0.8rem;
         }
 
@@ -562,22 +617,22 @@
         }
 
         .update-item-sidebar {
-            background: rgba(248, 249, 250, 0.9);
+            background: var(--bg-card-secondary);
             border-radius: 10px;
             padding: 1rem;
             margin-bottom: 1rem;
             font-size: 0.95rem;
             line-height: 1.4;
             transition: all 0.3s ease;
-            color: #333;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
 
         .update-item-sidebar:hover {
-            background: rgba(240, 242, 245, 0.95);
+            background: var(--bg-card);
             border-left: 3px solid #667eea;
             transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px var(--shadow-light);
         }
 
         /* Animations */
@@ -1039,9 +1094,340 @@
                 padding: 2rem 1rem;
             }
         }
+
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode-toggle .icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover .icon {
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        /* Enhanced Dark Mode Backgrounds */
+        [data-theme="dark"] .global-bg-orb {
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        }
+
+        [data-theme="dark"] .global-particle {
+            background: rgba(139, 158, 255, 0.6);
+        }
+
+        [data-theme="dark"] .orb {
+            background: radial-gradient(circle, rgba(139, 158, 255, 0.2) 0%, rgba(157, 123, 255, 0.1) 30%, rgba(255, 158, 247, 0.1) 60%, transparent 80%);
+        }
+
+        [data-theme="dark"] .blob {
+            background: linear-gradient(45deg, rgba(139, 158, 255, 0.15), rgba(157, 123, 255, 0.1), rgba(255, 158, 247, 0.12));
+        }
+
+        [data-theme="dark"] .light-ray {
+            background: linear-gradient(to bottom, transparent, rgba(139, 158, 255, 0.4), rgba(157, 123, 255, 0.3), transparent);
+        }
+
+        /* Navigation with Dark Mode */
+        .navbar {
+            background: var(--bg-navbar);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px var(--shadow-light);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        /* Header Section with Dark Mode */
+        .header-section {
+            text-align: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .header-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Container with Dark Mode */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .container {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Page Layout */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Newsletter Content with Dark Mode */
+        .newsletter-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 50px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Articles */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Article Cards with Dark Mode */
+        .article-card {
+            background: var(--bg-card-secondary);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 5px solid rgba(102, 126, 234, 0.8);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px var(--shadow-heavy);
+        }
+
+        .article-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .article-meta {
+            color: var(--text-meta);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .article-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Sidebar with Dark Mode */
+        .calendar-widget, .quick-updates-sidebar {
+            background: var(--bg-sidebar);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .quick-updates-sidebar {
+            padding: 2rem;
+        }
+
+        .calendar-title {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-month {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem;
+            font-weight: 600;
+            color: var(--text-meta);
+            font-size: 0.8rem;
+        }
+
+        .calendar-day {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .calendar-day.current {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+        }
+
+        /* Quick Updates */
+        .quick-updates-sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .quick-updates-sidebar .section-title {
+            color: #2c3e50;
+            border-bottom-color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .update-item-sidebar {
+            background: var(--bg-card-secondary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .update-item-sidebar:hover {
+            background: var(--bg-card);
+            border-left: 3px solid #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        /* Dark Mode Animation Enhancements */
+        [data-theme="dark"] .gradient-overlay {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 158, 255, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(157, 123, 255, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 40% 80%, rgba(255, 158, 247, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 60% 20%, rgba(139, 158, 255, 0.15) 0%, transparent 55%),
+                linear-gradient(45deg, rgba(139, 158, 255, 0.08), rgba(157, 123, 255, 0.08));
+        }
+
+        [data-theme="dark"] .energy-field {
+            background: 
+                radial-gradient(ellipse at 25% 25%, rgba(139, 158, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 75% 75%, rgba(157, 123, 255, 0.12) 0%, transparent 60%);
+        }
+
+        /* Toggle Animation */
+        .theme-transition * {
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+        }
     </style>
 </head>
-<body>
+<body data-theme="light" class="theme-transition">
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" id="darkModeToggle">
+        <span class="icon" id="themeIcon">🌙</span>
+        <span id="themeText">Dark</span>
+    </div>
+
     <!-- Global Animated Background -->
     <div class="global-animated-background">
         <div class="global-bg-orb"></div>
@@ -1330,6 +1716,45 @@
     </div>
 
     <script>
+        // Dark Mode Toggle Functionality
+        function initDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            const body = document.body;
+
+            // Check for saved theme preference or default to 'light'
+            const currentTheme = localStorage.getItem('notifly_theme') || 'light';
+            
+            // Apply the saved theme
+            body.setAttribute('data-theme', currentTheme);
+            updateToggleButton(currentTheme);
+
+            // Toggle theme on button click
+            darkModeToggle.addEventListener('click', () => {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('notifly_theme', newTheme);
+                updateToggleButton(newTheme);
+            });
+
+            function updateToggleButton(theme) {
+                if (theme === 'dark') {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light';
+                    darkModeToggle.style.background = 'rgba(0, 0, 0, 0.3)';
+                    darkModeToggle.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark';
+                    darkModeToggle.style.background = 'rgba(255, 255, 255, 0.2)';
+                    darkModeToggle.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                }
+            }
+        }
+
         // Check if user is already logged in
         function checkAuth() {
             const isLoggedIn = localStorage.getItem('notifly_logged_in');
@@ -1386,6 +1811,9 @@
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize dark mode
+            initDarkMode();
+            
             // Add form event listener
             const loginForm = document.getElementById('loginForm');
             if (loginForm) {
