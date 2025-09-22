@@ -123,36 +123,59 @@ def fetch_email_data(connection):
         return []
     
 
+import json
+import psycopg2
+
 def store_response_data(connection, email_id, response_data):
     """Store response data in the responses table"""
     try:
-        cursor = connection.cursor()
+        # Handle if response_data is a set containing a JSON string
+        if isinstance(response_data, set):
+            response_data = list(response_data)[0]  # Get the first (and likely only) element
+        
+        if isinstance(response_data, str):
+            response_data = json.loads(response_data)
+        
+        # Debug: Print the actual response_data structure
+        #print(f"Debug - response_data: {response_data}")
+        #print(f"Debug - response_data type: {type(response_data)}")
         
         # Extract new_subject and new_body from response data
-        new_subject = response_data.get('new_subject', '') if isinstance(response_data, dict) else ''
-        new_body = response_data.get('new_body', '') if isinstance(response_data, dict) else ''
+        if isinstance(response_data, dict):
+            #print(f"Debug - Available keys: {list(response_data.keys())}")
+            new_subject = response_data.get('new_subject', response_data.get('subject_truncated', ''))
+            new_body = response_data.get('new_body', response_data.get('summary', ''))
+        else:
+            new_subject = ''
+            new_body = ''
+            
+        print(new_subject, new_body, "printed")
         
-        # Insert or update response data
-        insert_query = """
-        INSERT INTO responses (idd, new_subject, new_body)
-        VALUES (%s, %s, %s)
-        ON CONFLICT (idd) 
-        DO UPDATE SET 
-            new_subject = EXCLUDED.new_subject,
-            new_body = EXCLUDED.new_body,
-            created_at = CURRENT_TIMESTAMP
-        """
-        
-        cursor.execute(insert_query, (email_id, new_subject, new_body))
-        connection.commit()
-        cursor.close()
+        # Use context manager for cursor handling
+        with connection.cursor() as cursor:
+            # Insert or update response data
+            insert_query = """
+            INSERT INTO responses (id, new_subject, new_body)
+            VALUES (%s, %s, %s)
+            ON CONFLICT (id) 
+            DO UPDATE SET 
+                new_subject = EXCLUDED.new_subject,
+                new_body = EXCLUDED.new_body,
+                created_at = CURRENT_TIMESTAMP
+            """
+            
+            cursor.execute(insert_query, (email_id, new_subject, new_body))
+            connection.commit()
         
         print(f"✅ Successfully stored response data for email ID {email_id}")
         return True
         
     except (Exception, psycopg2.Error) as error:
         print(f"❌ Error storing response data for email ID {email_id}: {error}")
+        connection.rollback()
         return False
+
+
     
 
 def make_post_request(email_record, url_endpoint):
@@ -209,11 +232,11 @@ def process_emails_with_rate_limit(email_data, url_endpoint, delay=1):
 
         if result['success']:
             success_count += 1
-            # Now you have access to the response object
-            store_response_data(connection, email['id'], result['response']) 
+            response_obj = result['response']
+
+            store_response_data(connect_to_database(), email['id'], {response_obj.text}) 
             
-            # Print response details at line 150 or wherever needed
-            print(f"POST Response Text: {response_obj.text}")
+           
         else:
             failure_count += 1
         
@@ -257,4 +280,5 @@ def main():
             print("🔐 Database connection closed.")
 
 if __name__ == "__main__":
+    init_responses_table(connect_to_database())
     main()
