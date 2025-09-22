@@ -1,0 +1,5 @@
+load login page
+upon successful login run back_end and import emails and store on database
+run responce_e to rework the subject, title assign tags and priority and store it on a database response
+we extract_news the info from the database "responses" in form of nested list
+using the nested list we display the necessary info and organise it into proper order
