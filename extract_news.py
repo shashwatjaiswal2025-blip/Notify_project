@@ -12,7 +12,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # Execute query
-cur.execute("SELECT id, new_subject, new_body, priority,  FROM responses")
+cur.execute("SELECT id, new_subject, new_body, priority FROM responses")
 
 # Get all results
 rows = cur.fetchall()

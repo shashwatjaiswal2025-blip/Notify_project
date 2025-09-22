@@ -94,8 +94,9 @@ def store_emails(conn, emails):
     cur.close()
     print(f"Stored {len(emails)} emails in the database.")
 
-if __name__ == "__main__":
+def main():
     conn = init_db()
     emails = fetch_gmail()
     store_emails(conn, emails)
     conn.close()
+main()

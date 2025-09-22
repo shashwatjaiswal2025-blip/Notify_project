@@ -16,7 +16,7 @@ class RequestData(BaseModel):
     priority: int
     tags: list[str]
 
-url = "http://10.91.86.87:8084"
+url = "http://10.91.86.87:8081"
 
 def ping_server(url, timeout=5):
     """
@@ -127,6 +127,7 @@ def fetch_email_data(connection):
 import json
 import psycopg2
 
+
 def store_response_data(connection, email_id, response_data):
     """Store response data in the responses table"""
     try:
@@ -141,24 +142,29 @@ def store_response_data(connection, email_id, response_data):
         #print(f"Debug - response_data: {response_data}")
         #print(f"Debug - response_data type: {type(response_data)}")
         
-        # Extract new_subject and new_body from response data
+        # Extract new_subject, new_body, and priority from response data
         if isinstance(response_data, dict):
             #print(f"Debug - Available keys: {list(response_data.keys())}")
+            
+            # Define priority first before using it
+            priority = response_data.get('priority', response_data.get('priority_level', ''))
+            
+            # Now use priority safely
             new_subject = response_data.get('new_subject', response_data.get('subject_truncated', ''))
             new_body = response_data.get('new_body', response_data.get('summary', ''))
-            priority = response_data.get('priority', response.data.get('priority_level', ''))
+            
+        
         else:
             new_subject = ''
             new_body = ''
             priority = ''
             
-        
         # Use context manager for cursor handling
         with connection.cursor() as cursor:
-            # Insert or update response data
+            # Insert or update response data - Fixed placeholder count
             insert_query = """
             INSERT INTO responses (id, new_subject, new_body, priority)
-            VALUES (%s, %s, %s,%s)
+            VALUES (%s, %s, %s, %s)
             ON CONFLICT (id) 
             DO UPDATE SET 
                 new_subject = EXCLUDED.new_subject,
@@ -167,7 +173,8 @@ def store_response_data(connection, email_id, response_data):
                 created_at = CURRENT_TIMESTAMP
             """
             
-            cursor.execute(insert_query, (email_id, new_subject, new_body))
+            # Pass all 4 values to match the 4 placeholders
+            cursor.execute(insert_query, (email_id, new_subject, new_body, priority))
             connection.commit()
         
         print(f"✅ Successfully stored response data for email ID {email_id}")
@@ -182,8 +189,7 @@ def store_response_data(connection, email_id, response_data):
     
 
 def make_post_request(email_record, url_endpoint):
-    """Make POST request with email data"""
-    print("url_endpoint=",url_endpoint)
+    
     url_endpoint+='/process_email'
     try:
         # Prepare payload according to specified format
