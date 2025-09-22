@@ -44,41 +44,6 @@ def home():
     """Main route for campus newsletter"""
     return render_template("index.html")
 
-@app.route("/newsletter")
-def newsletter_dashboard():
-    """Dashboard route for priority-based newsletter view"""
-    # Sort data by priority (highest first)
-    sorted_data = sorted(newsletter_data, key=lambda x: x[0], reverse=True)
-    
-    boxes = []
-    for item in sorted_data:
-        priority, title, summary, tags = item
-        
-        # Ensure tags is always a list
-        if isinstance(tags, str):
-            tags = [tags]
-        
-        # Get color scheme for this priority
-        color_scheme = get_priority_color(priority)
-        
-        box = {
-            "priority": priority,
-            "priority_label": get_priority_label(priority),
-            "title": title,
-            "summary": summary,
-            "tags": tags,
-            "color_scheme": color_scheme,
-            "timestamp": datetime.now().strftime("%B %d, %Y")
-        }
-        boxes.append(box)
-    
-    return render_template("newsletter.html", boxes=boxes)
-
-@app.route("/submit")
-def submit_page():
-    """Submit article page"""
-    return render_template("submit.html")
-
 @app.route("/api/newsletter")
 def api_newsletter():
     """API endpoint for frontend integration"""
@@ -106,46 +71,8 @@ def api_newsletter():
     
     return jsonify({"articles": articles, "status": "success"})
 
-@app.route("/process_email", methods=["POST"])
-def process_email():
-    """Original endpoint for AI processing (improved)"""
-    try:
-        data = request.get_json()
-        
-        # Simulate AI processing
-        processed = {
-            "subject": data.get("subject", "Processed Newsletter Item"),
-            "summary": f"AI-processed summary: {data.get('body', 'Content processed successfully')}",
-            "priority": data.get("priority", "normal"),
-            "timestamp": datetime.now().isoformat(),
-            "tags": ["#AI", "#Processed"]
-        }
-        
-        return jsonify(processed)
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/add_newsletter", methods=["POST"])
-def add_newsletter():
-    """Add new newsletter item"""
-    try:
-        data = request.get_json()
-        priority = data.get("priority", 1)
-        title = data.get("title", "New Newsletter Item")
-        summary = data.get("summary", "Summary not provided")
-        tags = data.get("tags", ["#General"])
-        
-        # Add to newsletter data
-        newsletter_data.append((priority, title, summary, tags))
-        
-        return jsonify({"status": "success", "message": "Newsletter item added"})
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 if __name__ == "__main__":
     print("🚀 Starting Campus Newsletter Server...")
-    print("📰 Priority-based newsletter available at: http://localhost:8080")
+    print("📰 Campus newsletter available at: http://localhost:8080")
     print("🔌 API endpoint available at: http://localhost:8080/api/newsletter")
     app.run(debug=True, port=8080)
