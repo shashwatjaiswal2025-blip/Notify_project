@@ -72,6 +72,7 @@ def init_responses_table(connection):
             id INTEGER PRIMARY KEY,
             new_subject TEXT,
             new_body TEXT,
+            priority INTEGER,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (id) REFERENCES emails (id) ON DELETE CASCADE
         );
@@ -145,22 +146,24 @@ def store_response_data(connection, email_id, response_data):
             #print(f"Debug - Available keys: {list(response_data.keys())}")
             new_subject = response_data.get('new_subject', response_data.get('subject_truncated', ''))
             new_body = response_data.get('new_body', response_data.get('summary', ''))
+            priority = response_data.get('priority', response.data.get('priority_level', ''))
         else:
             new_subject = ''
             new_body = ''
+            priority = ''
             
-        print(new_subject, new_body, "printed")
         
         # Use context manager for cursor handling
         with connection.cursor() as cursor:
             # Insert or update response data
             insert_query = """
-            INSERT INTO responses (id, new_subject, new_body)
-            VALUES (%s, %s, %s)
+            INSERT INTO responses (id, new_subject, new_body, priority)
+            VALUES (%s, %s, %s,%s)
             ON CONFLICT (id) 
             DO UPDATE SET 
                 new_subject = EXCLUDED.new_subject,
                 new_body = EXCLUDED.new_body,
+                priority = EXCLUDED.priority,
                 created_at = CURRENT_TIMESTAMP
             """
             
