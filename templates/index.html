@@ -1,691 +1,2469 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notifly - Campus Newsletter</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-
-    /* Navigation Bar */
-    .navbar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 1rem 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #667eea;
-      text-decoration: none;
-    }
-
-    .nav-menu {
-      display: flex;
-      list-style: none;
-      gap: 2rem;
-    }
-
-    .nav-link {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-
-    .nav-link:hover {
-      color: #667eea;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: #667eea;
-      transition: width 0.3s ease;
-    }
-
-    .nav-link:hover::after {
-      width: 100%;
-    }
-
-    /* Mobile Menu Toggle */
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-    }
-
-    .menu-toggle span {
-      width: 25px;
-      height: 3px;
-      background: #333;
-      margin: 3px 0;
-      transition: 0.3s;
-    }
-
-    /* Main Content */
-    .main-content {
-      margin-top: 80px;
-      padding: 2rem 0;
-    }
-
-    .container {
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    /* Layout Grid */
-    .page-layout {
-      display: grid;
-      grid-template-columns: 350px 1fr;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    /* Calendar Widget */
-    .calendar-widget {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 1.5rem;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .calendar-header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .calendar-title {
-      color: #667eea;
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    .calendar-month {
-      color: #333;
-      font-size: 1rem;
-      font-weight: 500;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-      margin-top: 1.5rem;
-      padding: 0.3rem;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 10px;
-    }
-
-    .calendar-day-header {
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: #666;
-      padding: 0.4rem 0.2rem;
-      background: #f8f9fa;
-      border-radius: 4px;
-      margin-bottom: 0.2rem;
-    }
-
-    .calendar-day {
-      text-align: center;
-      padding: 0.4rem 0.2rem;
-      font-size: 0.9rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 500;
-      background: rgba(255, 255, 255, 0.8);
-      margin: 1px;
-    }
-
-    .calendar-day:hover {
-      background: #e3f2fd !important;
-      transform: scale(1.02);
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
-    }
-
-    .calendar-day.current {
-      background: #667eea !important;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
-    }
-
-    .calendar-day.other-month {
-      color: #ccc;
-      background: rgba(255, 255, 255, 0.4) !important;
-    }
-
-    /* Quick Updates Sidebar */
-    .quick-updates-sidebar {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border-radius: 15px;
-      padding: 2rem;
-    }
-
-    .quick-updates-sidebar .section-title {
-      color: white;
-      border-bottom-color: white;
-      font-size: 1.4rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .update-item-sidebar {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      backdrop-filter: blur(5px);
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-
-    .update-item-sidebar:last-child {
-      margin-bottom: 0;
-    }
-
-    /* Header Section */
-    .header-section {
-      text-align: center;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 3rem 2rem;
-      margin-bottom: 3rem;
-      color: white;
-    }
-
-    .header-section h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .header-section p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
-
-    /* Newsletter Content */
-    .newsletter-content {
-      background: white;
-      border-radius: 20px;
-      padding: 3rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2rem;
-    }
-
-    .section-title {
-      font-size: 2rem;
-      color: #667eea;
-      margin-bottom: 2rem;
-      border-bottom: 3px solid #667eea;
-      padding-bottom: 0.5rem;
-    }
-
-    .article-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .article-card {
-      background: #f8f9fa;
-      border-radius: 15px;
-      padding: 2rem;
-      border-left: 5px solid #667eea;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .article-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .article-title {
-      font-size: 1.3rem;
-      color: #333;
-      margin-bottom: 1rem;
-    }
-
-    .article-meta {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .article-excerpt {
-      color: #555;
-      line-height: 1.6;
-    }
-
-    .read-more {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 500;
-      margin-top: 1rem;
-      display: inline-block;
-    }
-
-    .read-more:hover {
-      text-decoration: underline;
-    }
-
-    /* Quick Updates Section */
-    .quick-updates {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border-radius: 15px;
-      padding: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .update-item {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      backdrop-filter: blur(5px);
-    }
-
-    .update-item:last-child {
-      margin-bottom: 0;
-    }
-
-    /* Footer */
-    .footer {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      color: white;
-      text-align: center;
-      padding: 2rem;
-      border-radius: 20px;
-      margin-top: 2rem;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 1200px) {
-      .page-layout {
-        grid-template-columns: 320px 1fr;
-      }
-      
-      .calendar-widget {
-        padding: 1.2rem;
-      }
-    }
-
-    @media (max-width: 968px) {
-      .page-layout {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .sidebar {
-        order: 2;
-      }
-
-      .main-content-area {
-        order: 1;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: flex;
-      }
-
-      .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 80px;
-        flex-direction: column;
-        background: white;
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-        padding: 2rem 0;
-      }
-
-      .nav-menu.active {
-        left: 0;
-      }
-
-      .container {
-        padding: 0 1rem;
-      }
-
-      .calendar-widget {
-        padding: 1.5rem;
-      }
-
-      .calendar-title {
-        font-size: 1.2rem;
-      }
-
-      .calendar-day {
-        padding: 0.6rem;
-        font-size: 0.9rem;
-        min-height: 35px;
-      }
-
-      .calendar-day-header {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-
-      .quick-updates-sidebar {
-        padding: 1.5rem;
-      }
-
-      .header-section h1 {
-        font-size: 2rem;
-      }
-
-      .newsletter-content {
-        padding: 2rem;
-      }
-
-      .article-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .calendar-widget {
-        padding: 1rem;
-      }
-
-      .calendar-day {
-        padding: 0.4rem;
-        font-size: 0.8rem;
-        min-height: 30px;
-      }
-
-      .calendar-day-header {
-        padding: 0.4rem;
-        font-size: 0.7rem;
-      }
-
-      .quick-updates-sidebar {
-        padding: 1rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="#" class="logo">Notifly</a>
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="#home" class="nav-link">Home</a></li>
-        <li><a href="#latest" class="nav-link">Latest News</a></li>
-        <li><a href="#events" class="nav-link">Events</a></li>
-        <li><a href="#academics" class="nav-link">Academics</a></li>
-        <li><a href="submit.html" class="nav-link">Submit</a></li>
-      </ul>
-      <div class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="container">
-      <!-- Header Section -->
-      <section class="header-section" id="home">
-        <h1>Campus Newsletter</h1>
-        <p>Stay updated with the latest campus news, events, and announcements</p>
-      </section>
-
-      <!-- Page Layout with Sidebar -->
-      <div class="page-layout">
-        <!-- Left Sidebar -->
-        <div class="sidebar">
-          <!-- Calendar Widget -->
-          <div class="calendar-widget">
-            <div class="calendar-header">
-              <div class="calendar-title">September 2025</div>
-              <div class="calendar-month">Today: September 21</div>
-            </div>
-            <div class="calendar-grid">
-              <div class="calendar-day-header">Sun</div>
-              <div class="calendar-day-header">Mon</div>
-              <div class="calendar-day-header">Tue</div>
-              <div class="calendar-day-header">Wed</div>
-              <div class="calendar-day-header">Thu</div>
-              <div class="calendar-day-header">Fri</div>
-              <div class="calendar-day-header">Sat</div>
-              
-              <div class="calendar-day">1</div>
-              <div class="calendar-day">2</div>
-              <div class="calendar-day">3</div>
-              <div class="calendar-day">4</div>
-              <div class="calendar-day">5</div>
-              <div class="calendar-day">6</div>
-              <div class="calendar-day">7</div>
-              <div class="calendar-day">8</div>
-              <div class="calendar-day">9</div>
-              <div class="calendar-day">10</div>
-              <div class="calendar-day">11</div>
-              <div class="calendar-day">12</div>
-              <div class="calendar-day">13</div>
-              <div class="calendar-day">14</div>
-              <div class="calendar-day">15</div>
-              <div class="calendar-day">16</div>
-              <div class="calendar-day">17</div>
-              <div class="calendar-day">18</div>
-              <div class="calendar-day">19</div>
-              <div class="calendar-day">20</div>
-              <div class="calendar-day current">21</div>
-              <div class="calendar-day">22</div>
-              <div class="calendar-day">23</div>
-              <div class="calendar-day">24</div>
-              <div class="calendar-day">25</div>
-              <div class="calendar-day">26</div>
-              <div class="calendar-day">27</div>
-              <div class="calendar-day">28</div>
-              <div class="calendar-day">29</div>
-              <div class="calendar-day">30</div>
-              <div class="calendar-day other-month">1</div>
-              <div class="calendar-day other-month">2</div>
-              <div class="calendar-day other-month">3</div>
-              <div class="calendar-day other-month">4</div>
-              <div class="calendar-day other-month">5</div>
-            </div>
-          </div>
-
-          <!-- Quick Updates Sidebar -->
-          <div class="quick-updates-sidebar">
-            <h3 class="section-title">Quick Updates</h3>
-            <div class="update-item-sidebar">
-              <strong>📚 Library Hours:</strong> Extended 24/7 during exam periods
-            </div>
-            <div class="update-item-sidebar">
-              <strong>🚌 New Shuttle:</strong> Campus to research park route starts Monday
-            </div>
-            <div class="update-item-sidebar">
-              <strong>🎨 Art Gallery:</strong> "Perspectives" opens Friday at 6 PM in Student Center
-            </div>
-            <div class="update-item-sidebar">
-              <strong>💡 Innovation Challenge:</strong> Applications due September 30th
-            </div>
-            <div class="update-item-sidebar">
-              <strong>🏆 Dean's List:</strong> Fall semester applications now open
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="main-content-area">
-          <!-- Newsletter Content -->
-          <div class="newsletter-content">
-            <!-- Latest News Section -->
-            <section id="latest">
-              <h2 class="section-title">Latest News</h2>
-              <div class="article-grid">
-                <article class="article-card">
-                  <h3 class="article-title">New Library Extension Opens</h3>
-                  <div class="article-meta">Published on September 20, 2025 | Campus News</div>
-                  <p class="article-excerpt">
-                    The highly anticipated library extension featuring modern study spaces, collaboration rooms, and a digital media center is now open to all students. The new facility includes 24/7 access areas and state-of-the-art technology.
-                  </p>
-                  <a href="#" class="read-more">Read more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Fall Career Fair Registration</h3>
-                  <div class="article-meta">Published on September 19, 2025 | Career Services</div>
-                  <p class="article-excerpt">
-                    Registration is now open for the Fall Career Fair scheduled for October 15th. Over 100 companies will participate, offering internships and full-time positions across various industries.
-                  </p>
-                  <a href="#" class="read-more">Read more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Research Symposium Call for Papers</h3>
-                  <div class="article-meta">Published on September 18, 2025 | Research Office</div>
-                  <p class="article-excerpt">
-                    Graduate and undergraduate students are invited to submit abstracts for the Annual Research Symposium. Deadline for submissions is October 1st. Winners will receive research grants.
-                  </p>
-                  <a href="#" class="read-more">Read more →</a>
-                </article>
-              </div>
-            </section>
-
-            <!-- Events Section -->
-            <section id="events">
-              <h2 class="section-title">Upcoming Events</h2>
-              <div class="article-grid">
-                <article class="article-card">
-                  <h3 class="article-title">Tech Talk: AI in Healthcare</h3>
-                  <div class="article-meta">September 25, 2025 | 2:00 PM | Engineering Hall</div>
-                  <p class="article-excerpt">
-                    Join Dr. Sarah Chen as she discusses the latest developments in artificial intelligence applications in healthcare and medical research.
-                  </p>
-                  <a href="#" class="read-more">Learn more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Cultural Festival 2025</h3>
-                  <div class="article-meta">October 2-4, 2025 | Campus Quad</div>
-                  <p class="article-excerpt">
-                    Celebrate diversity with food, music, and performances from cultures around the world. Free admission for all students and community members.
-                  </p>
-                  <a href="#" class="read-more">Learn more →</a>
-                </article>
-
-                <article class="article-card">
-                  <h3 class="article-title">Homecoming Week</h3>
-                  <div class="article-meta">October 14-20, 2025 | Various Locations</div>
-                  <p class="article-excerpt">
-                    Alumni and students unite for a week of celebrations, including the parade, football game, and alumni networking events.
-                  </p>
-                  <a href="#" class="read-more">Learn more →</a>
-                </article>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <footer class="footer">
-        <p>&copy; 2025 Notifly Campus Newsletter. All rights reserved.</p>
-        <p>Have news to share? <a href="submit.html" style="color: #fff; text-decoration: underline;">Submit your story</a></p>
-      </footer>
-    </div>
-  </div>
-
-  <script>
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const navMenu = document.getElementById('navMenu');
-
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-    });
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Notifly - Campus Newsletter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='horizontal-layout.css') }}?v=3.0">
+    <style>
+        html {
+            scroll-behavior: smooth;
         }
-        // Close mobile menu if open
-        navMenu.classList.remove('active');
-      });
-    });
 
-    // Change navbar background on scroll
-    window.addEventListener('scroll', () => {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-      } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-      }
-    });
-  </script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Dark Mode Variables */
+        :root {
+            --bg-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4397 100%);
+            --bg-card: rgba(255, 255, 255, 0.98);
+            --bg-card-secondary: rgba(255, 255, 255, 0.95);
+            --bg-sidebar: rgba(255, 255, 255, 0.98);
+            --bg-navbar: rgba(255, 255, 255, 0.96);
+            --text-primary: #333;
+            --text-secondary: #555;
+            --text-meta: #666;
+            --border-color: rgba(255, 255, 255, 0.8);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-heavy: rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: linear-gradient(135deg, #1a1f36 0%, #2d1b3d 100%);
+            --bg-card: rgba(30, 35, 50, 0.95);
+            --bg-card-secondary: rgba(25, 30, 45, 0.92);
+            --bg-sidebar: rgba(30, 35, 50, 0.95);
+            --bg-navbar: rgba(25, 30, 45, 0.96);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --text-meta: #a0aec0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Global Animated Background */
+        .global-animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .global-bg-orb {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: globalFloat 25s infinite linear;
+        }
+
+        .global-bg-orb:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .global-bg-orb:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -8s;
+        }
+
+        .global-bg-orb:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -15s;
+        }
+
+        @keyframes globalFloat {
+            0% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0px, 0px) rotate(360deg); }
+        }
+
+        /* Global Floating Particles */
+        .global-floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .global-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: globalFloatUp 20s infinite linear;
+        }
+
+        @keyframes globalFloatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0vh) scale(0);
+            }
+        }
+
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #5a6fd8 0%, #6b4397 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px var(--shadow-heavy);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            min-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .login-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .login-container h2 {
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .test-login-btn {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main-content-wrapper {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .main-content-wrapper.show {
+            display: block;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--bg-navbar);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px var(--shadow-light);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.4s ease;
+            position: relative;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            animation: logoGradientShift 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+        }
+
+        [data-theme="dark"] .logo {
+            background: linear-gradient(135deg, #8b9eff 0%, #9d7bff 50%, #ff9ef7 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 15px rgba(139, 158, 255, 0.4);
+        }
+
+        .logo::before {
+            content: '📢';
+            margin-right: 8px;
+            font-size: 1.8rem;
+            animation: logoIconBounce 2s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            /* Ensure emoji is visible */
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px) scale(1.05);
+            text-shadow: 
+                0 4px 15px rgba(102, 126, 234, 0.4),
+                0 0 20px rgba(118, 75, 162, 0.3);
+            animation-play-state: paused;
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+        }
+
+        .logo:hover::before {
+            transform: rotate(10deg) scale(1.1);
+            animation-play-state: paused;
+        }
+
+        @keyframes logoGradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes logoIconBounce {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-3px) rotate(5deg);
+            }
+        }
+
+        /* Ensure logo is visible on all browsers */
+        @supports not (-webkit-background-clip: text) {
+            .logo {
+                background: none;
+                color: #333;
+                font-weight: 800;
+            }
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            font-weight: 600;
+        }
+
+        .nav-menu a.active:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .header-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Container with Dark Mode */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .container {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Page Layout */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Newsletter Content with Dark Mode */
+        .newsletter-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 50px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Articles */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Article Cards with Dark Mode */
+        .article-card {
+            background: var(--bg-card-secondary);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 5px solid rgba(102, 126, 234, 0.8);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px var(--shadow-heavy);
+        }
+
+        .article-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .article-meta {
+            color: var(--text-meta);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .article-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            color: #5a67d8;
+        }
+
+        /* AI Integration Styles */
+        .article-card.ai-generated {
+            border-left: 5px solid rgba(154, 230, 180, 0.8);
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(154, 230, 180, 0.05));
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+            to { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+        }
+
+        .article-priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .priority-high {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .priority-urgent {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .priority-normal {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .priority-low {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn:hover {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .refresh-icon {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes aiSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Loading States */
+        .news-loading {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card-secondary);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: aiSpin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .news-loading p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .news-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .news-error p {
+            color: #ef4444;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Priority-based Article Styling */
+        .priority-article {
+            border-left-width: 6px;
+            position: relative;
+        }
+
+        .priority-article.priority-critical {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(220, 38, 38, 0.05));
+        }
+
+        .priority-article.priority-high {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(245, 158, 11, 0.05));
+        }
+
+        .priority-article.priority-medium {
+            border-left-color: #3b82f6;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(59, 130, 246, 0.05));
+        }
+
+        .priority-article.priority-low {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(16, 185, 129, 0.05));
+        }
+
+        .priority-article.priority-info {
+            border-left-color: #6b7280;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(107, 114, 128, 0.05));
+        }
+
+        .priority-badge-inline {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-badge-inline.priority-critical {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            animation: urgentPulse 2s ease-in-out infinite;
+        }
+
+        .priority-badge-inline.priority-high {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .priority-badge-inline.priority-medium {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+        }
+
+        .priority-badge-inline.priority-low {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+        }
+
+        .priority-badge-inline.priority-info {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(220, 38, 38, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.9); }
+        }
+
+        .tags-section {
+            margin: 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .article-tag {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+        }
+
+        .priority-article .article-priority {
+            background: rgba(0, 0, 0, 0.1);
+            border-left: 3px solid var(--priority-accent);
+            padding: 8px 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        /* Placeholder message styling */
+        .placeholder-message {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card-secondary);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .placeholder-message p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Sidebar with Dark Mode */
+        .calendar-widget, .quick-updates-sidebar {
+            background: var(--bg-sidebar);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .quick-updates-sidebar {
+            padding: 2rem;
+        }
+
+        .calendar-title {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-month {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+            text-align: center;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem;
+            font-weight: 600;
+            color: var(--text-meta);
+            font-size: 0.8rem;
+        }
+
+        .calendar-day {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .calendar-day.current {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+        }
+
+        /* Quick Updates */
+        .quick-updates-sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .quick-updates-sidebar .section-title {
+            color: #2c3e50;
+            border-bottom-color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .update-item-sidebar {
+            background: var(--bg-card-secondary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .update-item-sidebar:hover {
+            background: var(--bg-card);
+            border-left: 3px solid #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Enhanced Fluid Background System - More Dynamic */
+        .fluid-background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            overflow: hidden;
+        }
+
+        /* Multi-layered Animated Gradient Overlay */
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300%;
+            height: 300%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.35) 0%, transparent 45%),
+                radial-gradient(circle at 40% 80%, rgba(240, 147, 251, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 60% 20%, rgba(96, 125, 139, 0.25) 0%, transparent 55%),
+                linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            animation: 
+                gradientShift 25s ease-in-out infinite,
+                gradientRotate 40s linear infinite,
+                gradientPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(-33%, -33%) scale(1); }
+            25% { transform: translate(-45%, -20%) scale(1.1); }
+            50% { transform: translate(-20%, -45%) scale(0.9); }
+            75% { transform: translate(-35%, -30%) scale(1.05); }
+        }
+
+        @keyframes gradientRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Enhanced Floating Orbs with Fluid Motion */
+        .floating-orbs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 30%, rgba(102, 126, 234, 0.1) 60%, transparent 80%);
+            filter: blur(2px);
+            animation: orbFluidMotion 30s infinite ease-in-out;
+        }
+
+        .orb:nth-child(1) {
+            width: 450px;
+            height: 450px;
+            top: 5%;
+            left: -5%;
+            animation-delay: 0s;
+            animation-duration: 35s;
+        }
+
+        .orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            top: 55%;
+            right: -10%;
+            animation-delay: -10s;
+            animation-duration: 28s;
+        }
+
+        .orb:nth-child(3) {
+            width: 600px;
+            height: 600px;
+            bottom: 10%;
+            left: 10%;
+            animation-delay: -20s;
+            animation-duration: 42s;
+        }
+
+        .orb:nth-child(4) {
+            width: 280px;
+            height: 280px;
+            top: 25%;
+            right: 20%;
+            animation-delay: -30s;
+            animation-duration: 32s;
+        }
+
+        .orb:nth-child(5) {
+            width: 400px;
+            height: 400px;
+            bottom: 35%;
+            right: -5%;
+            animation-delay: -15s;
+            animation-duration: 38s;
+        }
+
+        .orb:nth-child(6) {
+            width: 320px;
+            height: 320px;
+            top: 70%;
+            left: 60%;
+            animation-delay: -25s;
+            animation-duration: 30s;
+        }
+
+        @keyframes orbFluidMotion {
+            0%, 100% { 
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+                opacity: 0.6;
+            }
+            16% { 
+                transform: translate(80px, -60px) rotate(60deg) scale(1.2);
+                opacity: 0.8;
+            }
+            33% { 
+                transform: translate(-40px, 80px) rotate(120deg) scale(0.8);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(60px, -40px) rotate(180deg) scale(1.1);
+                opacity: 0.7;
+            }
+            66% { 
+                transform: translate(-80px, 60px) rotate(240deg) scale(0.9);
+                opacity: 0.9;
+            }
+            83% { 
+                transform: translate(40px, -80px) rotate(300deg) scale(1.15);
+                opacity: 0.65;
+            }
+        }
+
+        /* Flowing Wave System */
+        .wave-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .fluid-wave {
+            position: absolute;
+            width: 200%;
+            height: 150px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C300,120 600,0 900,60 C1050,100 1150,20 1200,60 L1200,120 L0,120 Z' fill='rgba(255,255,255,0.08)'/%3E%3C/svg%3E") repeat-x;
+            animation: waveFlow 20s linear infinite;
+        }
+
+        .fluid-wave:nth-child(1) {
+            top: 20%;
+            animation-duration: 25s;
+            opacity: 0.6;
+        }
+
+        .fluid-wave:nth-child(2) {
+            top: 60%;
+            animation-duration: 18s;
+            animation-direction: reverse;
+            opacity: 0.4;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,80 C300,20 600,120 900,80 C1050,40 1150,120 1200,80 L1200,120 L0,120 Z' fill='rgba(118,75,162,0.06)'/%3E%3C/svg%3E") repeat-x;
+        }
+
+        .fluid-wave:nth-child(3) {
+            bottom: 15%;
+            animation-duration: 30s;
+            opacity: 0.5;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C300,80 600,0 900,40 C1050,70 1150,10 1200,40 L1200,120 L0,120 Z' fill='rgba(240,147,251,0.05)'/%3E%3C/svg%3E") repeat-x;
+        }
+
+        @keyframes waveFlow {
+            0% { transform: translateX(0) scaleY(1); }
+            50% { transform: translateX(-25%) scaleY(1.2); }
+            100% { transform: translateX(-50%) scaleY(1); }
+        }
+
+        /* Enhanced Particle System with Fluid Movement */
+        .particle-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: particleFluidFlow 25s infinite linear;
+        }
+
+        .particle.small {
+            width: 4px;
+            height: 4px;
+            animation-duration: 20s;
+        }
+
+        .particle.medium {
+            width: 6px;
+            height: 6px;
+            animation-duration: 28s;
+        }
+
+        .particle.large {
+            width: 8px;
+            height: 8px;
+            animation-duration: 35s;
+        }
+
+        @keyframes particleFluidFlow {
+            0% {
+                opacity: 0;
+                transform: translateY(110vh) translateX(0px) rotate(0deg) scale(0);
+            }
+            5% {
+                opacity: 1;
+                transform: translateY(100vh) translateX(20px) rotate(45deg) scale(1);
+            }
+            25% {
+                opacity: 0.8;
+                transform: translateY(75vh) translateX(-30px) rotate(135deg) scale(1.2);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(50vh) translateX(40px) rotate(225deg) scale(0.8);
+            }
+            75% {
+                opacity: 0.6;
+                transform: translateY(25vh) translateX(-20px) rotate(315deg) scale(1.1);
+            }
+            95% {
+                opacity: 1;
+                transform: translateY(5vh) translateX(10px) rotate(405deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) translateX(50px) rotate(450deg) scale(0);
+            }
+        }
+
+        /* Morphing Blob System */
+        .morphing-blobs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .blob {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1), rgba(240, 147, 251, 0.12));
+            border-radius: 50%;
+            filter: blur(3px);
+            animation: blobMorph 45s infinite ease-in-out;
+        }
+
+        .blob:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 15%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .blob:nth-child(2) {
+            width: 250px;
+            height: 250px;
+            top: 65%;
+            right: 25%;
+            animation-delay: -15s;
+        }
+
+        .blob:nth-child(3) {
+            width: 180px;
+            height: 180px;
+            bottom: 25%;
+            left: 70%;
+            animation-delay: -30s;
+        }
+
+        .blob:nth-child(4) {
+            width: 220px;
+            height: 220px;
+            top: 40%;
+            left: 5%;
+            animation-delay: -22s;
+        }
+
+        @keyframes blobMorph {
+            0%, 100% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+                border-radius: 50% 40% 60% 30%;
+                opacity: 0.7;
+            }
+            20% {
+                transform: translate(30px, -50px) rotate(72deg) scale(1.3);
+                border-radius: 30% 70% 40% 60%;
+                opacity: 0.5;
+            }
+            40% {
+                transform: translate(-40px, 40px) rotate(144deg) scale(0.7);
+                border-radius: 70% 30% 50% 50%;
+                opacity: 0.9;
+            }
+            60% {
+                transform: translate(50px, -30px) rotate(216deg) scale(1.1);
+                border-radius: 40% 60% 30% 70%;
+                opacity: 0.6;
+            }
+            80% {
+                transform: translate(-30px, 60px) rotate(288deg) scale(0.9);
+                border-radius: 60% 40% 70% 30%;
+                opacity: 0.8;
+            }
+        }
+
+        /* Floating Light Rays */
+        .light-rays {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .light-ray {
+            position: absolute;
+            width: 1px;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), rgba(102, 126, 234, 0.3), transparent);
+            animation: rayFloat 15s infinite linear;
+            transform-origin: bottom center;
+        }
+
+        .light-ray:nth-child(1) {
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .light-ray:nth-child(2) {
+            left: 35%;
+            animation-delay: -5s;
+        }
+
+        .light-ray:nth-child(3) {
+            left: 55%;
+            animation-delay: -10s;
+        }
+
+        .light-ray:nth-child(4) {
+            left: 75%;
+            animation-delay: -7s;
+        }
+
+        .light-ray:nth-child(5) {
+            left: 85%;
+            animation-delay: -12s;
+        }
+
+        @keyframes rayFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scaleY(0);
+                opacity: 0;
+            }
+            10% {
+                transform: translateY(90vh) rotate(5deg) scaleY(1);
+                opacity: 1;
+            }
+            90% {
+                transform: translateY(-200px) rotate(-5deg) scaleY(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-300px) rotate(0deg) scaleY(0);
+                opacity: 0;
+            }
+        }
+
+        /* Swirling Energy Field */
+        .energy-field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 25% 25%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 75% 75%, rgba(118, 75, 162, 0.08) 0%, transparent 60%);
+            animation: energySwirl 60s linear infinite;
+        }
+
+        @keyframes energySwirl {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(0.9); }
+            75% { transform: rotate(270deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .login-container {
+                min-width: 300px;
+                margin: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 2rem;
+            }
+            
+            .header-section {
+                padding: 2rem 1rem;
+            }
+            
+            .newsletter-content {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode-toggle .icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover .icon {
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        /* Enhanced Dark Mode Backgrounds */
+        [data-theme="dark"] .global-bg-orb {
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        }
+
+        [data-theme="dark"] .global-particle {
+            background: rgba(139, 158, 255, 0.6);
+        }
+
+        [data-theme="dark"] .orb {
+            background: radial-gradient(circle, rgba(139, 158, 255, 0.2) 0%, rgba(157, 123, 255, 0.1) 30%, rgba(255, 158, 247, 0.1) 60%, transparent 80%);
+        }
+
+        [data-theme="dark"] .blob {
+            background: linear-gradient(45deg, rgba(139, 158, 255, 0.15), rgba(157, 123, 255, 0.1), rgba(255, 158, 247, 0.12));
+        }
+
+        [data-theme="dark"] .light-ray {
+            background: linear-gradient(to bottom, transparent, rgba(139, 158, 255, 0.4), rgba(157, 123, 255, 0.3), transparent);
+        }
+
+        /* Navigation with Dark Mode */
+        .navbar {
+            background: var(--bg-navbar);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px var(--shadow-light);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        /* Header Section with Dark Mode */
+        .header-section {
+            text-align: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .header-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Container with Dark Mode */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .container {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Page Layout */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Newsletter Content with Dark Mode */
+        .newsletter-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 50px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Articles */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Article Cards with Dark Mode */
+        .article-card {
+            background: var(--bg-card-secondary);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 5px solid rgba(102, 126, 234, 0.8);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px var(--shadow-heavy);
+        }
+
+        .article-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .article-meta {
+            color: var(--text-meta);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .article-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Sidebar with Dark Mode */
+        .calendar-widget, .quick-updates-sidebar {
+            background: var(--bg-sidebar);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .quick-updates-sidebar {
+            padding: 2rem;
+        }
+
+        .calendar-title {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-month {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem;
+            font-weight: 600;
+            color: var(--text-meta);
+            font-size: 0.8rem;
+        }
+
+        .calendar-day {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .calendar-day.current {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.other-month {
+            color: #ccc;
+        }
+
+        /* Quick Updates */
+        .quick-updates-sidebar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .quick-updates-sidebar .section-title {
+            color: #2c3e50;
+            border-bottom-color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .update-item-sidebar {
+            background: var(--bg-card-secondary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .update-item-sidebar:hover {
+            background: var(--bg-card);
+            border-left: 3px solid #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        /* Dark Mode Animation Enhancements */
+        [data-theme="dark"] .gradient-overlay {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 158, 255, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(157, 123, 255, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 40% 80%, rgba(255, 158, 247, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 60% 20%, rgba(139, 158, 255, 0.15) 0%, transparent 55%),
+                linear-gradient(45deg, rgba(139, 158, 255, 0.08), rgba(157, 123, 255, 0.08));
+        }
+
+        [data-theme="dark"] .energy-field {
+            background: 
+                radial-gradient(ellipse at 25% 25%, rgba(139, 158, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 75% 75%, rgba(157, 123, 255, 0.12) 0%, transparent 60%);
+        }
+
+        /* Toggle Animation */
+        .theme-transition * {
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+        }
+    </style>
+</head>
+<body data-theme="light" class="theme-transition">
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" id="darkModeToggle">
+        <span class="icon" id="themeIcon">🌙</span>
+        <span id="themeText">Dark</span>
+    </div>
+
+    <!-- Global Animated Background -->
+    <div class="global-animated-background">
+        <div class="global-bg-orb"></div>
+        <div class="global-bg-orb"></div>
+        <div class="global-bg-orb"></div>
+    </div>
+
+    <!-- Global Floating Particles -->
+    <div class="global-floating-particles">
+        <div class="global-particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="global-particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="global-particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="global-particle" style="left: 40%; animation-delay: 6s;"></div>
+        <div class="global-particle" style="left: 50%; animation-delay: 8s;"></div>
+        <div class="global-particle" style="left: 60%; animation-delay: 10s;"></div>
+        <div class="global-particle" style="left: 70%; animation-delay: 12s;"></div>
+        <div class="global-particle" style="left: 80%; animation-delay: 14s;"></div>
+        <div class="global-particle" style="left: 90%; animation-delay: 16s;"></div>
+        <div class="global-particle" style="left: 95%; animation-delay: 18s;"></div>
+    </div>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <h2>Welcome</h2>
+            <form id="loginForm">
+                <input type="text" class="login-input" id="username" placeholder="Enter Username" required>
+                <input type="password" class="login-input" id="password" placeholder="Enter Password" required>
+                <button type="submit" class="login-btn">SIGN IN</button>
+                <button type="button" class="test-login-btn" onclick="testLogin()">Test Login (Direct)</button>
+            </form>
+            <div style="margin-top: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+                <p>For prototype: any username and password works!</p>
+                <p style="margin-top: 0.5rem;">Examples: test/test, admin/123, demo/demo</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content-wrapper" id="mainContent">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="#" class="logo">Notifly</a>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#latest">Latest News</a></li>
+                    <li><a href="{{ url_for('submit_page') }}">Submit</a></li>
+                    <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="container">
+            <section class="header-section" id="home">
+                <h1>🎓 Campus Newsletter</h1>
+                <p>Stay updated with the latest campus news, events, and announcements</p>
+            </section>
+        </div>
+
+        <!-- Main Page Layout -->
+        <div class="page-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Calendar Widget -->
+                <div class="calendar-widget">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <div class="calendar-title">September 2025</div>
+                            <div class="calendar-month">Today: September 22</div>
+                        </div>
+                        <span style="font-size: 1.2rem;">📅</span>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                        
+                        <div class="calendar-day other-month">31</div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day current">22 ✨</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day other-month">1</div>
+                        <div class="calendar-day other-month">2</div>
+                        <div class="calendar-day other-month">3</div>
+                        <div class="calendar-day other-month">4</div>
+                    </div>
+                </div>
+
+                <!-- Quick Updates -->
+                <div class="quick-updates-sidebar">
+                    <h3 class="section-title">⚡ Quick Updates</h3>
+                    <div class="update-item-sidebar">
+                        📚 Library Hours: Extended 24/7 access areas and state-of-the-art technology
+                    </div>
+                    <div class="update-item-sidebar">
+                        🎓 Academic Calendar: Fall semester registration ends October 1st
+                    </div>
+                    <div class="update-item-sidebar">
+                        🏆 Sports Update: Campus volleyball tournament this weekend
+                    </div>
+                    <div class="update-item-sidebar">
+                        💡 Innovation Lab: New 3D printing and VR equipment available
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="newsletter-content" id="latest">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 class="section-title">📰 Latest News</h2>
+                    <button id="refreshNewsBtn" class="refresh-btn" onclick="loadAISummaries()">
+                        <span class="refresh-icon">🔄</span> Load Priority Newsletter
+                    </button>
+                </div>
+                
+                <!-- Loading indicator -->
+                <div id="newsLoading" class="news-loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Loading priority-sorted newsletter articles...</p>
+                </div>
+
+                <!-- Error message -->
+                <div id="newsError" class="news-error" style="display: none;">
+                    <p>🔄 Loading priority-sorted newsletter content...</p>
+                    <small>Displaying AI-powered articles sorted by priority level.</small>
+                </div>
+                
+                <div class="articles-grid" id="articlesGrid">
+                    <!-- Priority-based newsletter articles will be loaded here -->
+                    <div class="placeholder-message">
+                        <p>🔄 Click "Load Priority Newsletter" to see priority-sorted articles</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Fluid Background Container -->
+    <div class="fluid-background-container">
+        <!-- Multi-layered Animated Gradient Overlay -->
+        <div class="gradient-overlay"></div>
+        
+        <!-- Swirling Energy Field -->
+        <div class="energy-field"></div>
+        
+        <!-- Enhanced Floating Orbs -->
+        <div class="floating-orbs">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+
+        <!-- Flowing Wave System -->
+        <div class="wave-system">
+            <div class="fluid-wave"></div>
+            <div class="fluid-wave"></div>
+            <div class="fluid-wave"></div>
+        </div>
+
+        <!-- Enhanced Particle System -->
+        <div class="particle-system">
+            <div class="particle-layer">
+                <div class="particle small" style="left: 5%; animation-delay: 0s;"></div>
+                <div class="particle medium" style="left: 15%; animation-delay: 3s;"></div>
+                <div class="particle large" style="left: 25%; animation-delay: 6s;"></div>
+                <div class="particle small" style="left: 35%; animation-delay: 9s;"></div>
+                <div class="particle medium" style="left: 45%; animation-delay: 12s;"></div>
+                <div class="particle large" style="left: 55%; animation-delay: 15s;"></div>
+                <div class="particle small" style="left: 65%; animation-delay: 18s;"></div>
+                <div class="particle medium" style="left: 75%; animation-delay: 21s;"></div>
+                <div class="particle large" style="left: 85%; animation-delay: 24s;"></div>
+                <div class="particle small" style="left: 95%; animation-delay: 27s;"></div>
+            </div>
+        </div>
+
+        <!-- Morphing Blob System -->
+        <div class="morphing-blobs">
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+        </div>
+
+        <!-- Floating Light Rays -->
+        <div class="light-rays">
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+            <div class="light-ray"></div>
+        </div>
+    </div>
+
+    <script>
+        // Dark Mode Toggle Functionality
+        function initDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            const body = document.body;
+
+            // Check for saved theme preference or default to 'light'
+            const currentTheme = localStorage.getItem('notifly_theme') || 'light';
+            
+            // Apply the saved theme
+            body.setAttribute('data-theme', currentTheme);
+            updateToggleButton(currentTheme);
+
+            // Toggle theme on button click
+            darkModeToggle.addEventListener('click', () => {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('notifly_theme', newTheme);
+                updateToggleButton(newTheme);
+            });
+
+            function updateToggleButton(theme) {
+                if (theme === 'dark') {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light';
+                    darkModeToggle.style.background = 'rgba(0, 0, 0, 0.3)';
+                    darkModeToggle.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark';
+                    darkModeToggle.style.background = 'rgba(255, 255, 255, 0.2)';
+                    darkModeToggle.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                }
+            }
+        }
+
+        // Check if user is already logged in
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('notifly_logged_in');
+            
+            if (isLoggedIn === 'true') {
+                showMainContent();
+            } else {
+                showLoginOverlay();
+            }
+        }
+
+        // Show login overlay
+        function showLoginOverlay() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('mainContent').classList.remove('show');
+        }
+
+        // Show main content
+        function showMainContent() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').classList.add('show');
+        }
+
+        // Handle login form submission
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Simple validation - just check if both fields have content
+            if (username && password) {
+                localStorage.setItem('notifly_logged_in', 'true');
+                localStorage.setItem('notifly_username', username);
+                showMainContent();
+            } else {
+                alert('Please enter both username and password');
+            }
+        }
+
+        // Test login function
+        function testLogin() {
+            localStorage.setItem('notifly_logged_in', 'true');
+            localStorage.setItem('notifly_username', 'test-user');
+            showMainContent();
+        }
+
+        // AI News Integration Functions
+        async function loadAISummaries() {
+            const loadingEl = document.getElementById('newsLoading');
+            const errorEl = document.getElementById('newsError');
+            const articlesGrid = document.getElementById('articlesGrid');
+            const refreshBtn = document.getElementById('refreshNewsBtn');
+
+            // Show loading state
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            refreshBtn.disabled = true;
+            refreshBtn.querySelector('.refresh-icon').style.animation = 'aiSpin 1s linear infinite';
+
+            try {
+                // Try to fetch from priority-based newsletter API first
+                const response = await fetch('http://localhost:8080/api/newsletter');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    loadingEl.style.display = 'none';
+                    createPriorityNewsArticles(data.articles, articlesGrid);
+                } else {
+                    throw new Error('Priority API not available');
+                }
+                
+            } catch (error) {
+                console.log('Priority API not available, using demo content:', error);
+                
+                // Fallback to demo content
+                const simulatedResponse = await simulateAIResponse();
+                loadingEl.style.display = 'none';
+                createNewsArticlesFromAI(simulatedResponse, articlesGrid);
+                
+            } finally {
+                refreshBtn.disabled = false;
+                refreshBtn.querySelector('.refresh-icon').style.animation = 'none';
+            }
+        }
+
+        // Create articles from priority-based API
+        function createPriorityNewsArticles(articles, container) {
+            // Clear existing content 
+            container.innerHTML = '';
+            
+            // Add priority-based articles to replace all content
+            articles.forEach((article, index) => {
+                const articleElement = createPriorityArticleCard(article, index);
+                container.appendChild(articleElement);
+            });
+        }
+
+        function createPriorityArticleCard(articleData, index) {
+            const article = document.createElement('article');
+            article.className = 'article-card priority-article';
+            
+            // Get priority styling
+            const priorityClass = getPriorityClass(articleData.priority_level);
+            const priorityEmoji = getPriorityEmoji(articleData.priority_level);
+            article.classList.add(priorityClass);
+            
+            article.innerHTML = `
+                <div class="article-content">
+                    <div class="article-header">
+                        <h3 class="article-title">${articleData.subject}</h3>
+                        <span class="article-emoji">${priorityEmoji}</span>
+                    </div>
+                    <div class="article-meta-horizontal">
+                        <div class="article-meta">Published on ${articleData.date} | ${articleData.source}</div>
+                        <span class="priority-badge-inline ${priorityClass}">${articleData.priority.toUpperCase()}</span>
+                    </div>
+                    <p class="article-excerpt">${articleData.summary}</p>
+                    <div class="tags-section">
+                        ${articleData.tags.map(tag => `<span class="article-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="article-actions">
+                    <a href="#" class="read-more">Read full article →</a>
+                    <div class="article-priority priority-${articleData.priority}">
+                        Priority Level: ${articleData.priority_level}/5
+                    </div>
+                </div>
+            `;
+            
+            // Add animation delay
+            article.style.animationDelay = `${index * 0.1}s`;
+            
+            return article;
+        }
+
+        function getPriorityClass(level) {
+            const classes = {
+                5: 'priority-critical',
+                4: 'priority-high', 
+                3: 'priority-medium',
+                2: 'priority-low',
+                1: 'priority-info'
+            };
+            return classes[level] || 'priority-info';
+        }
+
+        function getPriorityEmoji(level) {
+            const emojis = {
+                5: '🚨',
+                4: '🔥',
+                3: '📰',
+                2: '📄',
+                1: 'ℹ️'
+            };
+            return emojis[level] || '📰';
+        }
+
+        // Simulate AI response for demonstration
+        async function simulateAIResponse() {
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            return {
+                subject: "Campus Innovation Challenge 2025",
+                summary: "Students are invited to participate in the annual Innovation Challenge with a focus on sustainable technology solutions. This year's competition offers a $50,000 prize pool in scholarships and grants for innovative projects addressing climate change and sustainability.",
+                priority: "high"
+            };
+        }
+
+        // Create demo AI content when backend is not available
+        function createDemoAIContent(container) {
+            const demoData = {
+                subject: "🤖 AI Demo: Campus Innovation Challenge",
+                summary: "This is a demonstration of AI-generated content integration. When your backend is ready, real AI summaries will appear here automatically. The system supports priority levels, real-time updates, and seamless dark mode integration.",
+                priority: "normal"
+            };
+            
+            createNewsArticlesFromAI(demoData, container);
+        }
+
+        function createNewsArticlesFromAI(aiData, container) {
+            // Clear existing content except default
+            const defaultContent = container.querySelector('.default-content');
+            container.innerHTML = '';
+            
+            // Create article from AI summary
+            if (aiData && aiData.subject && aiData.summary) {
+                const article = createArticleCard({
+                    title: aiData.subject,
+                    summary: aiData.summary,
+                    priority: aiData.priority || 'normal',
+                    date: new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    }),
+                    source: 'AI Generated',
+                    emoji: getEmojiForPriority(aiData.priority)
+                });
+                container.appendChild(article);
+            }
+
+            // Add the default content back
+            if (defaultContent) {
+                container.appendChild(defaultContent);
+            }
+
+            // Add sample AI articles for demonstration
+            addSampleAIArticles(container);
+        }
+
+        function createArticleCard(articleData) {
+            const article = document.createElement('article');
+            article.className = 'article-card ai-generated';
+            
+            article.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <h3 class="article-title">${articleData.title}</h3>
+                    <span style="font-size: 1.5rem;">${articleData.emoji}</span>
+                </div>
+                <div class="article-meta">
+                    Published on ${articleData.date} | ${articleData.source}
+                </div>
+                <p class="article-excerpt">${articleData.summary}</p>
+                <div class="article-priority priority-${articleData.priority}">
+                    Priority: ${articleData.priority.toUpperCase()}
+                </div>
+                <a href="#" class="read-more">Read more →</a>
+            `;
+            
+            return article;
+        }
+
+        function getEmojiForPriority(priority) {
+            const emojiMap = {
+                'high': '🔥',
+                'urgent': '⚡',
+                'normal': '📰',
+                'low': '📄'
+            };
+            return emojiMap[priority] || '📰';
+        }
+
+        function addSampleAIArticles(container) {
+            // Add some sample AI-generated articles for demonstration
+            const sampleArticles = [
+                {
+                    title: "Campus Wi-Fi Upgrade Completed",
+                    summary: "The campus-wide Wi-Fi infrastructure upgrade has been successfully completed, providing faster speeds and better coverage across all buildings. Students can now enjoy seamless connectivity for their academic needs.",
+                    priority: "normal",
+                    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    source: "IT Services",
+                    emoji: "📶"
+                },
+                {
+                    title: "Emergency Maintenance Notice",
+                    summary: "Scheduled maintenance on the main server will occur this weekend. Some online services may be temporarily unavailable. Students are advised to download necessary materials in advance.",
+                    priority: "high",
+                    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    source: "Facilities Management",
+                    emoji: "⚠️"
+                }
+            ];
+
+            sampleArticles.forEach(articleData => {
+                const article = createArticleCard(articleData);
+                container.appendChild(article);
+            });
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('notifly_logged_in');
+            localStorage.removeItem('notifly_username');
+            showLoginOverlay();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize dark mode
+            initDarkMode();
+            
+            // Add form event listener
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+            
+            // Check authentication status
+            checkAuth();
+
+            // Initialize navigation functionality
+            initNavigation();
+
+            // Load AI summaries on page load
+            setTimeout(() => {
+                loadAISummaries();
+            }, 2000); // Wait 2 seconds after page load
+
+            // Prevent minimize/focus loss
+            initAntiMinimize();
+        });
+
+        // Navigation functionality
+        function initNavigation() {
+            // Add smooth scroll behavior to navigation links
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Remove active class from all nav links
+                        navLinks.forEach(navLink => navLink.classList.remove('active'));
+                        
+                        // Add active class to clicked link
+                        this.classList.add('active');
+                        
+                        // Smooth scroll to target with offset for navbar
+                        const navbarHeight = 80; // Adjust based on your navbar height
+                        const targetPosition = targetElement.offsetTop - navbarHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // If it's the Latest News section, also load content
+                        if (targetId === 'latest') {
+                            setTimeout(() => {
+                                loadAISummaries();
+                            }, 500); // Load after scroll animation
+                        }
+                    }
+                });
+            });
+            
+            // Highlight active section on scroll
+            window.addEventListener('scroll', highlightActiveSection);
+        }
+
+        function highlightActiveSection() {
+            const sections = ['home', 'latest']; // Add more section IDs as needed
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            
+            let currentSection = '';
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                        currentSection = sectionId;
+                    }
+                }
+            });
+            
+            // Update active nav link
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Anti-minimize functionality
+        function initAntiMinimize() {
+            // Prevent window blur (losing focus)
+            let isWindowFocused = true;
+            let blurTimeout;
+
+            // Detect when window loses focus
+            window.addEventListener('blur', function() {
+                isWindowFocused = false;
+                
+                // Show alert after short delay
+                blurTimeout = setTimeout(() => {
+                    if (!isWindowFocused) {
+                        // Attempt to bring window back to focus
+                        window.focus();
+                        
+                        // Show notification
+                        showFocusWarning();
+                    }
+                }, 1000);
+            });
+
+            // Detect when window gains focus
+            window.addEventListener('focus', function() {
+                isWindowFocused = true;
+                clearTimeout(blurTimeout);
+                hideFocusWarning();
+            });
+
+            // Prevent common minimize shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Prevent Alt+Tab, Windows+D, Windows+M, etc.
+                if (
+                    (e.altKey && e.key === 'Tab') ||
+                    (e.metaKey && e.key === 'd') ||
+                    (e.metaKey && e.key === 'm') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'N') ||
+                    e.key === 'F11' // Prevent fullscreen toggle
+                ) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showShortcutWarning();
+                    return false;
+                }
+            });
+
+            // Prevent right-click context menu (optional security measure)
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Detect page visibility change (when user switches tabs)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    // Page is now hidden
+                    setTimeout(() => {
+                        if (document.hidden) {
+                            window.focus();
+                            showVisibilityWarning();
+                        }
+                    }, 500);
+                }
+            });
+
+            // Prevent F12 developer tools
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                    (e.ctrlKey && e.key === 'U')) {
+                    e.preventDefault();
+                    showDevToolsWarning();
+                    return false;
+                }
+            });
+        }
+
+        function showFocusWarning() {
+            createWarningModal(
+                '⚠️ Stay Focused!',
+                'Please keep the Notifly campus newsletter active. Do not minimize or switch windows.',
+                'warning-focus'
+            );
+        }
+
+        function showShortcutWarning() {
+            createWarningModal(
+                '🚫 Action Blocked',
+                'Minimize shortcuts are disabled. Please stay on the campus newsletter.',
+                'warning-shortcut'
+            );
+        }
+
+        function showVisibilityWarning() {
+            createWarningModal(
+                '👁️ Stay Here!',
+                'Please return to the Notifly campus newsletter. Tab switching is discouraged.',
+                'warning-visibility'
+            );
+        }
+
+        function showDevToolsWarning() {
+            createWarningModal(
+                '🔒 Access Restricted',
+                'Developer tools are disabled for security reasons.',
+                'warning-devtools'
+            );
+        }
+
+        function createWarningModal(title, message, className) {
+            // Remove existing warning if any
+            const existingWarning = document.querySelector('.focus-warning-modal');
+            if (existingWarning) {
+                existingWarning.remove();
+            }
+
+            const modal = document.createElement('div');
+            modal.className = `focus-warning-modal ${className}`;
+            modal.innerHTML = `
+                <div class="warning-content">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                    <button onclick="hideFocusWarning()" class="warning-btn">I Understand</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Auto-hide after 5 seconds
+            setTimeout(hideFocusWarning, 5000);
+        }
+
+        function hideFocusWarning() {
+            const warning = document.querySelector('.focus-warning-modal');
+            if (warning) {
+                warning.classList.add('fade-out');
+                setTimeout(() => warning.remove(), 300);
+            }
+        }
+    </script>
 </body>
 </html>

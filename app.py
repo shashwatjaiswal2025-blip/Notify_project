@@ -41,7 +41,12 @@ def get_priority_label(priority):
 
 @app.route("/")
 def home():
-    """Main route for priority-based newsletter view"""
+    """Main route for campus newsletter"""
+    return render_template("index.html")
+
+@app.route("/newsletter")
+def newsletter_dashboard():
+    """Dashboard route for priority-based newsletter view"""
     # Sort data by priority (highest first)
     sorted_data = sorted(newsletter_data, key=lambda x: x[0], reverse=True)
     
@@ -68,6 +73,11 @@ def home():
         boxes.append(box)
     
     return render_template("newsletter.html", boxes=boxes)
+
+@app.route("/submit")
+def submit_page():
+    """Submit article page"""
+    return render_template("submit.html")
 
 @app.route("/api/newsletter")
 def api_newsletter():
