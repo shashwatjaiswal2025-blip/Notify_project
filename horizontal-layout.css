@@ -1,0 +1,178 @@
+/* Horizontal News Layout Override */
+
+/* Override grid layout to horizontal bars */
+.articles-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    margin-top: 2rem !important;
+}
+
+/* Horizontal Article Card Layout */
+.article-card {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 80px !important;
+    width: 100% !important;
+    padding: 1.5rem 2rem !important;
+    border-radius: 12px !important;
+    border-left-width: 6px !important;
+    flex-direction: row !important;
+}
+
+.article-card:hover {
+    transform: translateX(10px) !important;
+}
+
+/* Article content layout for horizontal bars */
+.article-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Article header with title and emoji side by side */
+.article-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.article-title {
+    font-size: 1.2rem !important;
+    margin: 0 !important;
+    flex: 1;
+}
+
+.article-emoji {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    flex-shrink: 0;
+}
+
+/* Meta information in horizontal line */
+.article-meta-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.article-meta {
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+}
+
+/* Truncated summary for horizontal layout */
+.article-excerpt {
+    font-size: 0.95rem !important;
+    margin: 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+/* Horizontal tags */
+.tags-section {
+    margin: 0.5rem 0 0 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.article-tag {
+    padding: 2px 8px !important;
+    border-radius: 8px !important;
+    font-size: 0.7rem !important;
+}
+
+/* Right side actions and priority */
+.article-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    flex-shrink: 0;
+}
+
+.read-more {
+    font-size: 0.9rem !important;
+    white-space: nowrap;
+}
+
+.read-more:hover {
+    transform: translateX(5px) !important;
+}
+
+.article-priority {
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    font-size: 0.7rem !important;
+    margin: 0 !important;
+    white-space: nowrap;
+}
+
+/* Priority badges inline */
+.ai-badge, .priority-badge-inline {
+    padding: 3px 8px !important;
+    border-radius: 10px !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+}
+
+/* Priority colors for horizontal bars */
+.priority-article.priority-critical {
+    background: linear-gradient(90deg, var(--bg-card-secondary), rgba(220, 38, 38, 0.08)) !important;
+}
+
+.priority-article.priority-high {
+    background: linear-gradient(90deg, var(--bg-card-secondary), rgba(245, 158, 11, 0.08)) !important;
+}
+
+.priority-article.priority-medium {
+    background: linear-gradient(90deg, var(--bg-card-secondary), rgba(59, 130, 246, 0.08)) !important;
+}
+
+.priority-article.priority-low {
+    background: linear-gradient(90deg, var(--bg-card-secondary), rgba(16, 185, 129, 0.08)) !important;
+}
+
+.priority-article.priority-info {
+    background: linear-gradient(90deg, var(--bg-card-secondary), rgba(107, 114, 128, 0.08)) !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .article-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 1.5rem !important;
+        min-height: auto !important;
+    }
+
+    .article-header {
+        width: 100%;
+    }
+
+    .article-actions {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-top: 1rem !important;
+    }
+
+    .article-meta-horizontal {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}

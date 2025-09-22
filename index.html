@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifly - Campus Newsletter</title>
+    <link rel="stylesheet" href="horizontal-layout.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -375,6 +380,19 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            font-weight: 600;
+        }
+
+        .nav-menu a.active:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
         }
 
         .logout-btn {
@@ -528,6 +546,239 @@
 
         .read-more:hover {
             color: #5a67d8;
+        }
+
+        /* AI Integration Styles */
+        .article-card.ai-generated {
+            border-left: 5px solid rgba(154, 230, 180, 0.8);
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(154, 230, 180, 0.05));
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+            to { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+        }
+
+        .article-priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .priority-high {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .priority-urgent {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .priority-normal {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .priority-low {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn:hover {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .refresh-icon {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes aiSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Loading States */
+        .news-loading {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card-secondary);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: aiSpin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .news-loading p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .news-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .news-error p {
+            color: #ef4444;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Priority-based Article Styling */
+        .priority-article {
+            border-left-width: 6px;
+            position: relative;
+        }
+
+        .priority-article.priority-critical {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(220, 38, 38, 0.05));
+        }
+
+        .priority-article.priority-high {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(245, 158, 11, 0.05));
+        }
+
+        .priority-article.priority-medium {
+            border-left-color: #3b82f6;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(59, 130, 246, 0.05));
+        }
+
+        .priority-article.priority-low {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(16, 185, 129, 0.05));
+        }
+
+        .priority-article.priority-info {
+            border-left-color: #6b7280;
+            background: linear-gradient(135deg, var(--bg-card-secondary), rgba(107, 114, 128, 0.05));
+        }
+
+        .priority-badge-inline {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-badge-inline.priority-critical {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            animation: urgentPulse 2s ease-in-out infinite;
+        }
+
+        .priority-badge-inline.priority-high {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .priority-badge-inline.priority-medium {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+        }
+
+        .priority-badge-inline.priority-low {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+        }
+
+        .priority-badge-inline.priority-info {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(220, 38, 38, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.9); }
+        }
+
+        .tags-section {
+            margin: 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .article-tag {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+        }
+
+        .priority-article .article-priority {
+            background: rgba(0, 0, 0, 0.1);
+            border-left: 3px solid var(--priority-accent);
+            padding: 8px 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        /* Placeholder message styling */
+        .placeholder-message {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card-secondary);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .placeholder-message p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin: 0;
         }
 
         /* Sidebar with Dark Mode */
@@ -1483,7 +1734,7 @@
 
         <!-- Header Section -->
         <div class="container">
-            <section class="header-section">
+            <section class="header-section" id="home">
                 <h1>🎓 Campus Newsletter</h1>
                 <p>Stay updated with the latest campus news, events, and announcements</p>
             </section>
@@ -1569,88 +1820,31 @@
             </aside>
 
             <!-- Main Content -->
-            <main class="newsletter-content">
-                <h2 class="section-title">📰 Latest News</h2>
+            <main class="newsletter-content" id="latest">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 class="section-title">📰 Latest News</h2>
+                    <button id="refreshNewsBtn" class="refresh-btn" onclick="loadAISummaries()">
+                        <span class="refresh-icon">🔄</span> Load Priority Newsletter
+                    </button>
+                </div>
                 
-                <div class="articles-grid">
-                    <article class="article-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 class="article-title">New Library Extension Opens</h3>
-                            <span style="font-size: 1.5rem;">🎓</span>
-                        </div>
-                        <div class="article-meta">Published on September 20, 2025 | Campus News</div>
-                        <p class="article-excerpt">
-                            The highly anticipated library extension featuring modern study spaces, collaboration rooms, and 
-                            a digital media center is now open to all students. The new facility includes 24/7 access areas and 
-                            state-of-the-art technology.
-                        </p>
-                        <a href="#" class="read-more">Read more →</a>
-                    </article>
+                <!-- Loading indicator -->
+                <div id="newsLoading" class="news-loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Loading priority-sorted newsletter articles...</p>
+                </div>
 
-                    <article class="article-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 class="article-title">Fall Career Fair Registration</h3>
-                            <span style="font-size: 1.5rem;">💼</span>
-                        </div>
-                        <div class="article-meta">Published on September 19, 2025 | Career Services</div>
-                        <p class="article-excerpt">
-                            Registration is now open for the Fall Career Fair scheduled for October 15th. Over 100 
-                            companies will participate, offering internships and full-time positions across various industries.
-                        </p>
-                        <a href="#" class="read-more">Read more →</a>
-                    </article>
-
-                    <article class="article-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 class="article-title">Research Symposium Call for Papers</h3>
-                            <span style="font-size: 1.5rem;">🔬</span>
-                        </div>
-                        <div class="article-meta">Published on September 18, 2025 | Research Office</div>
-                        <p class="article-excerpt">
-                            Graduate and undergraduate students are invited to submit abstracts for the Annual Research Symposium. 
-                            Deadline for submissions is October 1st. Winners will receive research grants.
-                        </p>
-                        <a href="#" class="read-more">Read more →</a>
-                    </article>
-
-                    <article class="article-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 class="article-title">Innovation Challenge 2025</h3>
-                            <span style="font-size: 1.5rem;">💡</span>
-                        </div>
-                        <div class="article-meta">Published on September 17, 2025 | Innovation Hub</div>
-                        <p class="article-excerpt">
-                            Students are invited to participate in the annual Innovation Challenge. This year's theme focuses on 
-                            sustainable technology solutions. Prize pool worth $50,000 in scholarships and grants.
-                        </p>
-                        <a href="#" class="read-more">Read more →</a>
-                    </article>
-
-                    <article class="article-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 class="article-title">Art Exhibition Opening</h3>
-                            <span style="font-size: 1.5rem;">🎨</span>
-                        </div>
-                        <div class="article-meta">Published on September 16, 2025 | Arts Department</div>
-                        <p class="article-excerpt">
-                            The annual student art exhibition opens next week featuring works from fine arts, digital media, 
-                            and sculpture students. Public reception on September 25th from 6-9 PM.
-                        </p>
-                        <a href="#" class="read-more">Read more →</a>
-                    </article>
-
-                    <article class="article-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 class="article-title">Campus Sustainability Initiative</h3>
-                            <span style="font-size: 1.5rem;">🏆</span>
-                        </div>
-                        <div class="article-meta">Published on September 15, 2025 | Environmental Committee</div>
-                        <p class="article-excerpt">
-                            New campus-wide recycling program launches October 1st. Students can earn rewards for participating 
-                            in sustainability activities. Goal is to achieve carbon neutrality by 2030.
-                        </p>
-                        <a href="#" class="read-more">Read more →</a>
-                    </article>
+                <!-- Error message -->
+                <div id="newsError" class="news-error" style="display: none;">
+                    <p>🔄 Loading priority-sorted newsletter content...</p>
+                    <small>Displaying AI-powered articles sorted by priority level.</small>
+                </div>
+                
+                <div class="articles-grid" id="articlesGrid">
+                    <!-- Priority-based newsletter articles will be loaded here -->
+                    <div class="placeholder-message">
+                        <p>🔄 Click "Load Priority Newsletter" to see priority-sorted articles</p>
+                    </div>
                 </div>
             </main>
         </div>
@@ -1802,6 +1996,230 @@
             showMainContent();
         }
 
+        // AI News Integration Functions
+        async function loadAISummaries() {
+            const loadingEl = document.getElementById('newsLoading');
+            const errorEl = document.getElementById('newsError');
+            const articlesGrid = document.getElementById('articlesGrid');
+            const refreshBtn = document.getElementById('refreshNewsBtn');
+
+            // Show loading state
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            refreshBtn.disabled = true;
+            refreshBtn.querySelector('.refresh-icon').style.animation = 'aiSpin 1s linear infinite';
+
+            try {
+                // Try to fetch from priority-based newsletter API first
+                const response = await fetch('http://localhost:8080/api/newsletter');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    loadingEl.style.display = 'none';
+                    createPriorityNewsArticles(data.articles, articlesGrid);
+                } else {
+                    throw new Error('Priority API not available');
+                }
+                
+            } catch (error) {
+                console.log('Priority API not available, using demo content:', error);
+                
+                // Fallback to demo content
+                const simulatedResponse = await simulateAIResponse();
+                loadingEl.style.display = 'none';
+                createNewsArticlesFromAI(simulatedResponse, articlesGrid);
+                
+            } finally {
+                refreshBtn.disabled = false;
+                refreshBtn.querySelector('.refresh-icon').style.animation = 'none';
+            }
+        }
+
+        // Create articles from priority-based API
+        function createPriorityNewsArticles(articles, container) {
+            // Clear existing content 
+            container.innerHTML = '';
+            
+            // Add priority-based articles to replace all content
+            articles.forEach((article, index) => {
+                const articleElement = createPriorityArticleCard(article, index);
+                container.appendChild(articleElement);
+            });
+        }
+
+        function createPriorityArticleCard(articleData, index) {
+            const article = document.createElement('article');
+            article.className = 'article-card priority-article';
+            
+            // Get priority styling
+            const priorityClass = getPriorityClass(articleData.priority_level);
+            const priorityEmoji = getPriorityEmoji(articleData.priority_level);
+            article.classList.add(priorityClass);
+            
+            article.innerHTML = `
+                <div class="article-content">
+                    <div class="article-header">
+                        <h3 class="article-title">${articleData.subject}</h3>
+                        <span class="article-emoji">${priorityEmoji}</span>
+                    </div>
+                    <div class="article-meta-horizontal">
+                        <div class="article-meta">Published on ${articleData.date} | ${articleData.source}</div>
+                        <span class="priority-badge-inline ${priorityClass}">${articleData.priority.toUpperCase()}</span>
+                    </div>
+                    <p class="article-excerpt">${articleData.summary}</p>
+                    <div class="tags-section">
+                        ${articleData.tags.map(tag => `<span class="article-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="article-actions">
+                    <a href="#" class="read-more">Read full article →</a>
+                    <div class="article-priority priority-${articleData.priority}">
+                        Priority Level: ${articleData.priority_level}/5
+                    </div>
+                </div>
+            `;
+            
+            // Add animation delay
+            article.style.animationDelay = `${index * 0.1}s`;
+            
+            return article;
+        }
+
+        function getPriorityClass(level) {
+            const classes = {
+                5: 'priority-critical',
+                4: 'priority-high', 
+                3: 'priority-medium',
+                2: 'priority-low',
+                1: 'priority-info'
+            };
+            return classes[level] || 'priority-info';
+        }
+
+        function getPriorityEmoji(level) {
+            const emojis = {
+                5: '🚨',
+                4: '🔥',
+                3: '📰',
+                2: '📄',
+                1: 'ℹ️'
+            };
+            return emojis[level] || '📰';
+        }
+
+        // Simulate AI response for demonstration
+        async function simulateAIResponse() {
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            return {
+                subject: "Campus Innovation Challenge 2025",
+                summary: "Students are invited to participate in the annual Innovation Challenge with a focus on sustainable technology solutions. This year's competition offers a $50,000 prize pool in scholarships and grants for innovative projects addressing climate change and sustainability.",
+                priority: "high"
+            };
+        }
+
+        // Create demo AI content when backend is not available
+        function createDemoAIContent(container) {
+            const demoData = {
+                subject: "🤖 AI Demo: Campus Innovation Challenge",
+                summary: "This is a demonstration of AI-generated content integration. When your backend is ready, real AI summaries will appear here automatically. The system supports priority levels, real-time updates, and seamless dark mode integration.",
+                priority: "normal"
+            };
+            
+            createNewsArticlesFromAI(demoData, container);
+        }
+
+        function createNewsArticlesFromAI(aiData, container) {
+            // Clear existing content except default
+            const defaultContent = container.querySelector('.default-content');
+            container.innerHTML = '';
+            
+            // Create article from AI summary
+            if (aiData && aiData.subject && aiData.summary) {
+                const article = createArticleCard({
+                    title: aiData.subject,
+                    summary: aiData.summary,
+                    priority: aiData.priority || 'normal',
+                    date: new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    }),
+                    source: 'AI Generated',
+                    emoji: getEmojiForPriority(aiData.priority)
+                });
+                container.appendChild(article);
+            }
+
+            // Add the default content back
+            if (defaultContent) {
+                container.appendChild(defaultContent);
+            }
+
+            // Add sample AI articles for demonstration
+            addSampleAIArticles(container);
+        }
+
+        function createArticleCard(articleData) {
+            const article = document.createElement('article');
+            article.className = 'article-card ai-generated';
+            
+            article.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <h3 class="article-title">${articleData.title}</h3>
+                    <span style="font-size: 1.5rem;">${articleData.emoji}</span>
+                </div>
+                <div class="article-meta">
+                    Published on ${articleData.date} | ${articleData.source}
+                </div>
+                <p class="article-excerpt">${articleData.summary}</p>
+                <div class="article-priority priority-${articleData.priority}">
+                    Priority: ${articleData.priority.toUpperCase()}
+                </div>
+                <a href="#" class="read-more">Read more →</a>
+            `;
+            
+            return article;
+        }
+
+        function getEmojiForPriority(priority) {
+            const emojiMap = {
+                'high': '🔥',
+                'urgent': '⚡',
+                'normal': '📰',
+                'low': '📄'
+            };
+            return emojiMap[priority] || '📰';
+        }
+
+        function addSampleAIArticles(container) {
+            // Add some sample AI-generated articles for demonstration
+            const sampleArticles = [
+                {
+                    title: "Campus Wi-Fi Upgrade Completed",
+                    summary: "The campus-wide Wi-Fi infrastructure upgrade has been successfully completed, providing faster speeds and better coverage across all buildings. Students can now enjoy seamless connectivity for their academic needs.",
+                    priority: "normal",
+                    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    source: "IT Services",
+                    emoji: "📶"
+                },
+                {
+                    title: "Emergency Maintenance Notice",
+                    summary: "Scheduled maintenance on the main server will occur this weekend. Some online services may be temporarily unavailable. Students are advised to download necessary materials in advance.",
+                    priority: "high",
+                    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    source: "Facilities Management",
+                    emoji: "⚠️"
+                }
+            ];
+
+            sampleArticles.forEach(articleData => {
+                const article = createArticleCard(articleData);
+                container.appendChild(article);
+            });
+        }
+
         // Logout function
         function logout() {
             localStorage.removeItem('notifly_logged_in');
@@ -1822,7 +2240,227 @@
             
             // Check authentication status
             checkAuth();
+
+            // Initialize navigation functionality
+            initNavigation();
+
+            // Load AI summaries on page load
+            setTimeout(() => {
+                loadAISummaries();
+            }, 2000); // Wait 2 seconds after page load
+
+            // Prevent minimize/focus loss
+            initAntiMinimize();
         });
+
+        // Navigation functionality
+        function initNavigation() {
+            // Add smooth scroll behavior to navigation links
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Remove active class from all nav links
+                        navLinks.forEach(navLink => navLink.classList.remove('active'));
+                        
+                        // Add active class to clicked link
+                        this.classList.add('active');
+                        
+                        // Smooth scroll to target with offset for navbar
+                        const navbarHeight = 80; // Adjust based on your navbar height
+                        const targetPosition = targetElement.offsetTop - navbarHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // If it's the Latest News section, also load content
+                        if (targetId === 'latest') {
+                            setTimeout(() => {
+                                loadAISummaries();
+                            }, 500); // Load after scroll animation
+                        }
+                    }
+                });
+            });
+            
+            // Highlight active section on scroll
+            window.addEventListener('scroll', highlightActiveSection);
+        }
+
+        function highlightActiveSection() {
+            const sections = ['home', 'latest']; // Add more section IDs as needed
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+            
+            let currentSection = '';
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                        currentSection = sectionId;
+                    }
+                }
+            });
+            
+            // Update active nav link
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Anti-minimize functionality
+        function initAntiMinimize() {
+            // Prevent window blur (losing focus)
+            let isWindowFocused = true;
+            let blurTimeout;
+
+            // Detect when window loses focus
+            window.addEventListener('blur', function() {
+                isWindowFocused = false;
+                
+                // Show alert after short delay
+                blurTimeout = setTimeout(() => {
+                    if (!isWindowFocused) {
+                        // Attempt to bring window back to focus
+                        window.focus();
+                        
+                        // Show notification
+                        showFocusWarning();
+                    }
+                }, 1000);
+            });
+
+            // Detect when window gains focus
+            window.addEventListener('focus', function() {
+                isWindowFocused = true;
+                clearTimeout(blurTimeout);
+                hideFocusWarning();
+            });
+
+            // Prevent common minimize shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Prevent Alt+Tab, Windows+D, Windows+M, etc.
+                if (
+                    (e.altKey && e.key === 'Tab') ||
+                    (e.metaKey && e.key === 'd') ||
+                    (e.metaKey && e.key === 'm') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'N') ||
+                    e.key === 'F11' // Prevent fullscreen toggle
+                ) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showShortcutWarning();
+                    return false;
+                }
+            });
+
+            // Prevent right-click context menu (optional security measure)
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Detect page visibility change (when user switches tabs)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    // Page is now hidden
+                    setTimeout(() => {
+                        if (document.hidden) {
+                            window.focus();
+                            showVisibilityWarning();
+                        }
+                    }, 500);
+                }
+            });
+
+            // Prevent F12 developer tools
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                    (e.ctrlKey && e.key === 'U')) {
+                    e.preventDefault();
+                    showDevToolsWarning();
+                    return false;
+                }
+            });
+        }
+
+        function showFocusWarning() {
+            createWarningModal(
+                '⚠️ Stay Focused!',
+                'Please keep the Notifly campus newsletter active. Do not minimize or switch windows.',
+                'warning-focus'
+            );
+        }
+
+        function showShortcutWarning() {
+            createWarningModal(
+                '🚫 Action Blocked',
+                'Minimize shortcuts are disabled. Please stay on the campus newsletter.',
+                'warning-shortcut'
+            );
+        }
+
+        function showVisibilityWarning() {
+            createWarningModal(
+                '👁️ Stay Here!',
+                'Please return to the Notifly campus newsletter. Tab switching is discouraged.',
+                'warning-visibility'
+            );
+        }
+
+        function showDevToolsWarning() {
+            createWarningModal(
+                '🔒 Access Restricted',
+                'Developer tools are disabled for security reasons.',
+                'warning-devtools'
+            );
+        }
+
+        function createWarningModal(title, message, className) {
+            // Remove existing warning if any
+            const existingWarning = document.querySelector('.focus-warning-modal');
+            if (existingWarning) {
+                existingWarning.remove();
+            }
+
+            const modal = document.createElement('div');
+            modal.className = `focus-warning-modal ${className}`;
+            modal.innerHTML = `
+                <div class="warning-content">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                    <button onclick="hideFocusWarning()" class="warning-btn">I Understand</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Auto-hide after 5 seconds
+            setTimeout(hideFocusWarning, 5000);
+        }
+
+        function hideFocusWarning() {
+            const warning = document.querySelector('.focus-warning-modal');
+            if (warning) {
+                warning.classList.add('fade-out');
+                setTimeout(() => warning.remove(), 300);
+            }
+        }
     </script>
 </body>
 </html>

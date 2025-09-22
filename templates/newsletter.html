@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 Priority Newsletter System - Notifly</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: rgba(255, 255, 255, 0.05);
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .newsletter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .newsletter-box {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newsletter-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--priority-color);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .newsletter-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--shadow-medium);
+        }
+
+        /* Priority-based styling */
+        .priority-critical {
+            --priority-color: linear-gradient(135deg, #dc2626, #991b1b);
+            border-left: 5px solid #dc2626;
+        }
+
+        .priority-high {
+            --priority-color: linear-gradient(135deg, #f59e0b, #d97706);
+            border-left: 5px solid #f59e0b;
+        }
+
+        .priority-medium {
+            --priority-color: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-left: 5px solid #3b82f6;
+        }
+
+        .priority-low {
+            --priority-color: linear-gradient(135deg, #10b981, #047857);
+            border-left: 5px solid #10b981;
+        }
+
+        .priority-info {
+            --priority-color: linear-gradient(135deg, #6b7280, #4b5563);
+            border-left: 5px solid #6b7280;
+        }
+
+        .priority-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .priority-badge {
+            background: var(--priority-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .priority-level {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .box-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .box-summary {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 2rem auto;
+            display: block;
+            width: fit-content;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .newsletter-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Animation for loading */
+        .newsletter-box {
+            animation: slideIn 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .newsletter-box:nth-child(1) { animation-delay: 0.1s; }
+        .newsletter-box:nth-child(2) { animation-delay: 0.2s; }
+        .newsletter-box:nth-child(3) { animation-delay: 0.3s; }
+        .newsletter-box:nth-child(4) { animation-delay: 0.4s; }
+        .newsletter-box:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📰 Priority Newsletter System</h1>
+        <p>AI-Powered Campus News • Sorted by Priority Level</p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">{{ boxes|length }}</div>
+            <div class="stat-label">Total Articles</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ boxes|selectattr("priority", "equalto", 5)|list|length + boxes|selectattr("priority", "equalto", 4)|list|length }}</div>
+            <div class="stat-label">High Priority</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ boxes|selectattr("priority", "equalto", 3)|list|length + boxes|selectattr("priority", "equalto", 2)|list|length + boxes|selectattr("priority", "equalto", 1)|list|length }}</div>
+            <div class="stat-label">Standard Priority</div>
+        </div>
+    </div>
+
+    <div class="newsletter-container">
+        {% for box in boxes %}
+        <div class="newsletter-box priority-{{ box.priority_label.lower() }}">
+            <div class="priority-header">
+                <span class="priority-badge">{{ box.priority_label }}</span>
+                <span class="priority-level">{{ box.priority }}</span>
+            </div>
+            
+            <div class="box-title">{{ box.title }}</div>
+            <div class="box-summary">{{ box.summary }}</div>
+            
+            <div class="tags-container">
+                {% for tag in box.tags %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="timestamp">📅 {{ box.timestamp }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="/" class="back-btn">← Back to Main Campus Newsletter</a>
+
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📰 Priority Newsletter System loaded successfully!');
+            console.log(`Total articles: {{ boxes|length }}`);
+            
+            // Add click handlers for newsletter boxes
+            const boxes = document.querySelectorAll('.newsletter-box');
+            boxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    // Could add modal or detailed view here
+                    console.log('Newsletter item clicked:', this.querySelector('.box-title').textContent);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

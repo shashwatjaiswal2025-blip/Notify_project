@@ -185,6 +185,186 @@ def submit_fallback():
     """Fallback endpoint for simple form submissions"""
     return submit_news()
 
+@app.route('/process_email', methods=['POST', 'OPTIONS'])
+def process_email():
+    """AI Summary Generation Endpoint"""
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With')
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+        return response
+    
+    try:
+        data = request.get_json()
+        
+        # Extract the content to summarize
+        content = data.get('body', '')
+        subject = data.get('subject', '')
+        priority = data.get('priority', 'normal')
+        notification_level = data.get('notification_level', 'medium')
+        
+        if not content:
+            return jsonify({
+                'success': False,
+                'message': 'Content body is required for AI summary generation'
+            }), 400
+        
+        # Simulate AI processing (replace with actual AI service call)
+        # This is a placeholder - you would integrate with actual AI service here
+        ai_summary = generate_ai_summary(content, subject, priority, notification_level)
+        
+        # Store the AI summary in database with approved status for display
+        conn = sqlite3.connect('notifly.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO submissions 
+            (title, category, organization, description, event_date, event_time, 
+             location, contact_email, contact_phone, contact_name, submitted_at, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            ai_summary['title'],
+            ai_summary['category'],
+            'AI Generated',
+            ai_summary['summary'],
+            ai_summary.get('event_date', ''),
+            ai_summary.get('event_time', ''),
+            ai_summary.get('location', ''),
+            'ai@notifly.system',
+            '',
+            'AI Assistant',
+            datetime.now().isoformat(),
+            'approved'  # Auto-approve AI generated content
+        ))
+        
+        submission_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'AI summary generated and published successfully!',
+            'id': submission_id,
+            'summary': ai_summary,
+            'processed_at': datetime.now().isoformat()
+        }), 200
+        
+    except Exception as e:
+        print(f"AI Processing Error: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'AI processing error: {str(e)}'
+        }), 500
+
+def generate_ai_summary(content, subject, priority, notification_level):
+    """
+    Simulate AI summary generation
+    Replace this with actual AI service integration (OpenAI, Claude, etc.)
+    """
+    import re
+    
+    # Extract key information from content
+    words = content.split()
+    
+    # Generate a smart summary based on content analysis
+    if 'event' in content.lower() or 'meeting' in content.lower():
+        category = 'events'
+        # Extract date patterns
+        date_match = re.search(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b', content)
+        event_date = date_match.group() if date_match else ''
+        
+        # Extract time patterns
+        time_match = re.search(r'\b\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?\b', content)
+        event_time = time_match.group() if time_match else ''
+        
+        # Extract location
+        location_keywords = ['room', 'hall', 'building', 'center', 'auditorium', 'campus']
+        location = ''
+        for word in words:
+            if any(keyword in word.lower() for keyword in location_keywords):
+                # Get surrounding context for location
+                word_index = words.index(word)
+                location_context = ' '.join(words[max(0, word_index-2):word_index+3])
+                location = location_context
+                break
+    elif 'research' in content.lower() or 'academic' in content.lower():
+        category = 'research'
+        event_date = ''
+        event_time = ''
+        location = ''
+    elif 'career' in content.lower() or 'job' in content.lower():
+        category = 'career-services'
+        event_date = ''
+        event_time = ''
+        location = ''
+    else:
+        category = 'campus-news'
+        event_date = ''
+        event_time = ''
+        location = ''
+    
+    # Generate title from subject or first sentence
+    title = subject if subject else content.split('.')[0][:80] + '...'
+    
+    # Generate concise summary (first 2 sentences or up to 200 chars)
+    sentences = content.split('.')
+    summary = '. '.join(sentences[:2]) + '.'
+    if len(summary) > 200:
+        summary = summary[:197] + '...'
+    
+    # Add priority and notification level context
+    if priority == 'high':
+        title = f"🚨 {title}"
+    elif priority == 'low':
+        title = f"📝 {title}"
+    else:
+        title = f"📢 {title}"
+    
+    return {
+        'title': title,
+        'category': category,
+        'summary': summary,
+        'event_date': event_date,
+        'event_time': event_time,
+        'location': location,
+        'priority': priority,
+        'notification_level': notification_level,
+        'generated_by': 'AI Assistant'
+    }
+
+@app.route('/api/approved-news')
+def get_approved_news():
+    """Get approved news items for display on main page"""
+    try:
+        conn = sqlite3.connect('notifly.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT * FROM submissions 
+            WHERE status = 'approved' 
+            ORDER BY submitted_at DESC 
+            LIMIT 10
+        ''')
+        rows = cursor.fetchall()
+        
+        columns = [description[0] for description in cursor.description]
+        approved_news = [dict(zip(columns, row)) for row in rows]
+        
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'news': approved_news,
+            'count': len(approved_news)
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error retrieving approved news: {str(e)}'
+        }), 500
+
 if __name__ == '__main__':
     print("Starting Notifly Backend...")
     print("Available endpoints:")
